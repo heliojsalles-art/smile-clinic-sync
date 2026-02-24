@@ -1,9 +1,10 @@
-import { CalendarDays, Users, Clock } from 'lucide-react';
+import { CalendarDays, Users, Clock, DollarSign } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ClinicProvider } from '@/contexts/ClinicContext';
 import AgendaView from '@/components/clinic/AgendaView';
 import PatientList from '@/components/clinic/PatientList';
 import RecallList from '@/components/clinic/RecallList';
+import FinanceView from '@/components/clinic/FinanceView';
 
 export default function Index() {
   return (
@@ -19,7 +20,7 @@ export default function Index() {
 
         {/* Main Content */}
         <Tabs defaultValue="agenda" className="px-4 py-4">
-          <TabsList className="w-full grid grid-cols-3 mb-4">
+          <TabsList className="w-full grid grid-cols-4 mb-4">
             <TabsTrigger value="agenda" className="gap-1.5 text-xs sm:text-sm">
               <CalendarDays className="h-4 w-4" />
               Agenda
@@ -32,6 +33,10 @@ export default function Index() {
               <Clock className="h-4 w-4" />
               Retorno
             </TabsTrigger>
+            <TabsTrigger value="financeiro" className="gap-1.5 text-xs sm:text-sm">
+              <DollarSign className="h-4 w-4" />
+              Financeiro
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="agenda">
@@ -42,6 +47,9 @@ export default function Index() {
           </TabsContent>
           <TabsContent value="retorno">
             <RecallList />
+          </TabsContent>
+          <TabsContent value="financeiro">
+            <FinanceView />
           </TabsContent>
         </Tabs>
       </div>
