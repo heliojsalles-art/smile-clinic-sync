@@ -9,7 +9,13 @@ import WhatsAppDialog from './WhatsAppDialog';
 
 export default function RecallList() {
   const { patients, getLastAppointment, templates } = useClinic();
-  const [whatsApp, setWhatsApp] = useState<{ name: string; phone: string } | null>(null);
+  const [whatsApp, setWhatsApp] = useState<{ id: string; name: string; phone: string } | null>(null);
+  const [notifiedIds, setNotifiedIds] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('clinic_recall_notified');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch { return new Set(); }
+  });
 
   const recallPatients = useMemo(() => {
     const now = new Date();
@@ -20,9 +26,18 @@ export default function RecallList() {
         const months = lastDate ? differenceInMonths(now, lastDate) : null;
         return { patient: p, lastDate, months };
       })
-      .filter(r => r.months === null || r.months >= 6)
+      .filter(r => (r.months === null || r.months >= 6) && !notifiedIds.has(r.patient.id))
       .sort((a, b) => (b.months ?? 999) - (a.months ?? 999));
-  }, [patients, getLastAppointment]);
+  }, [patients, getLastAppointment, notifiedIds]);
+
+  const handleNotified = (patientId: string) => {
+    setNotifiedIds(prev => {
+      const next = new Set(prev);
+      next.add(patientId);
+      localStorage.setItem('clinic_recall_notified', JSON.stringify([...next]));
+      return next;
+    });
+  };
 
   if (recallPatients.length === 0) {
     return (
@@ -55,7 +70,7 @@ export default function RecallList() {
             variant="outline"
             size="sm"
             className="shrink-0 text-green-600 border-green-200 hover:bg-green-50"
-            onClick={() => setWhatsApp({ name: patient.name, phone: patient.phone })}
+            onClick={() => setWhatsApp({ id: patient.id, name: patient.name, phone: patient.phone })}
           >
             <MessageCircle className="h-4 w-4 mr-1" />
             Lembrar
@@ -70,6 +85,7 @@ export default function RecallList() {
           patientName={whatsApp.name}
           patientPhone={whatsApp.phone}
           defaultMessage={templates.recallReminder}
+          onSent={() => handleNotified(whatsApp.id)}
         />
       )}
     </div>
