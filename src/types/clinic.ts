@@ -1,9 +1,18 @@
+export interface Payment {
+  id: string;
+  date: string;
+  amount: number;
+  description: string;
+}
+
 export interface Patient {
   id: string;
   name: string;
   phone: string;
   isInsurance: boolean;
   insuranceNumber?: string;
+  treatment?: string;
+  payments?: Payment[];
   createdAt: string;
 }
 
