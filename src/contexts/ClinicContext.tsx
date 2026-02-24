@@ -30,6 +30,7 @@ function loadFromStorage<T>(key: string, fallback: T): T {
 const DEFAULT_TEMPLATES: WhatsAppTemplate = {
   appointmentReminder: 'Olá {nome}! 😊 Lembramos que sua consulta na Salles Ateliê Odontológico está marcada para o dia {data} às {horario}. Aguardamos você! 🦷',
   recallReminder: 'Olá {nome}! 😊 Faz tempo que não nos visitamos! Que tal agendar uma avaliação e limpeza na Salles Ateliê Odontológico? Entre em contato conosco! 🦷✨',
+  birthdayGreeting: 'Olá {nome}! 🎂🎉 A equipe da Salles Ateliê Odontológico deseja um Feliz Aniversário! Que seu dia seja repleto de alegria e sorrisos! 😊🦷✨',
 };
 
 export function ClinicProvider({ children }: { children: ReactNode }) {

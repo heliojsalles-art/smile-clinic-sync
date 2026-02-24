@@ -9,6 +9,7 @@ export interface Patient {
   id: string;
   name: string;
   phone: string;
+  birthDate?: string; // YYYY-MM-DD
   isInsurance: boolean;
   insuranceNumber?: string;
   treatment?: string;
@@ -27,4 +28,5 @@ export interface Appointment {
 export interface WhatsAppTemplate {
   appointmentReminder: string;
   recallReminder: string;
+  birthdayGreeting: string;
 }

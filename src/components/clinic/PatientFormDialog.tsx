@@ -20,6 +20,7 @@ export default function PatientFormDialog({ open, onOpenChange, editPatient, onS
   const { addPatient, updatePatient } = useClinic();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceNumber, setInsuranceNumber] = useState('');
   const [treatment, setTreatment] = useState('');
@@ -29,12 +30,13 @@ export default function PatientFormDialog({ open, onOpenChange, editPatient, onS
     if (editPatient) {
       setName(editPatient.name);
       setPhone(editPatient.phone);
+      setBirthDate(editPatient.birthDate || '');
       setIsInsurance(editPatient.isInsurance);
       setInsuranceNumber(editPatient.insuranceNumber || '');
       setTreatment(editPatient.treatment || '');
       setPayments(editPatient.payments || []);
     } else {
-      setName(''); setPhone(''); setIsInsurance(false); setInsuranceNumber('');
+      setName(''); setPhone(''); setBirthDate(''); setIsInsurance(false); setInsuranceNumber('');
       setTreatment(''); setPayments([]);
     }
   }, [editPatient, open]);
@@ -61,6 +63,7 @@ export default function PatientFormDialog({ open, onOpenChange, editPatient, onS
     const data = {
       name: name.trim(),
       phone: phone.trim(),
+      birthDate: birthDate || undefined,
       isInsurance,
       insuranceNumber: isInsurance ? insuranceNumber.trim() : undefined,
       treatment: treatment.trim() || undefined,
@@ -95,6 +98,10 @@ export default function PatientFormDialog({ open, onOpenChange, editPatient, onS
           <div>
             <Label htmlFor="phone">Telefone (WhatsApp)</Label>
             <Input id="phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(11) 99999-9999" />
+          </div>
+          <div>
+            <Label htmlFor="birthDate">Data de Nascimento</Label>
+            <Input id="birthDate" type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} />
           </div>
           <div className="flex items-center gap-3">
             <Switch checked={isInsurance} onCheckedChange={setIsInsurance} />
