@@ -12,6 +12,7 @@ interface Props {
   patientPhone: string;
   defaultMessage: string;
   replacements?: Record<string, string>;
+  onSent?: () => void;
 }
 
 function cleanPhone(phone: string): string {
@@ -26,7 +27,7 @@ function applyReplacements(msg: string, replacements: Record<string, string>): s
   return result;
 }
 
-export default function WhatsAppDialog({ open, onOpenChange, patientName, patientPhone, defaultMessage, replacements = {} }: Props) {
+export default function WhatsAppDialog({ open, onOpenChange, patientName, patientPhone, defaultMessage, replacements = {}, onSent }: Props) {
   const allReplacements = { nome: patientName, ...replacements };
   const [message, setMessage] = useState('');
 
@@ -38,6 +39,7 @@ export default function WhatsAppDialog({ open, onOpenChange, patientName, patien
     const phone = cleanPhone(patientPhone);
     const fullPhone = phone.length <= 11 ? `55${phone}` : phone;
     window.open(`https://wa.me/${fullPhone}?text=${encodeURIComponent(message)}`, '_blank');
+    onSent?.();
     onOpenChange(false);
   };
 
