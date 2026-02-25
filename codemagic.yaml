@@ -1,31 +1,49 @@
-# The workflows key is used to define one or more CI/CD workflows.
+# The name of the workflow, displayed in the Codemagic UI
 workflows:
-  android-debug-workflow:
-    # A descriptive name for the workflow
-    name: Android Gradle APK Build
-    
-    # Specify the instance type (mac_mini_m2, in this case)
+  android-release:
+    name: Android Release Build
+    # Use a macOS instance for the build
     instance_type: mac_mini_m2
-    
-    scripts:
-      - name: Set up local properties
-    
-        script: |
-          "ANDROID_HOME" > "/Users/builder/Library/Android/"
-          "ANDROID_SDK_ROOT" > "$ANDROID_HOME/tools/bin/sdkmanager"
+
+    environment:
+      # Define the Flutter version to use (e.g., stable, beta, 3.7.6)
+      flutter: stable
+      # Define environment variables, including code signing secrets (if used)
       
-      - name: Grant execute permission to gradlew
+    scripts:
+      # Clone the repository
+      - name: Get source codes
         script: |
-          chmod +x ./gradlew
-
-      - name: Build Android debug APK
-        # The command to run the Gradle build task
+          git clone <https://github.com/heliojsalles-art/smile-clinic-sync> .
+      
+      # Set up Flutter environment
+      - name: Set up Flutter
         script: |
-          ./gradlew assembleDebug
+          flutter channel $FLUTTER_VERSION
+          flutter upgrade
+      
+      # Get Flutter dependencies
+      - name: Get dependencies
+        script: |
+          flutter pub get
 
-    # Artifacts section specifies which files to save after the build
+      # Optional: Add script for build versioning (e.g., using Codemagic CLI tools)
+      # - name: Increment build number
+      #   script: |
+      #     # Example using Codemagic's built-in tools for versioning
+      #     # Check Codemagic documentation for specifics
+      #     # latest_build_number=$(app-store-connect get-latest-build-number --bundle-id "<your_bundle_id>")
+      #     # new_build_number=$(($latest_build_number + 1))
+      #     # flutter build apk --build-number=$new_build_number
+      
+      # Build the Android APK in release mode
+      - name: Build Android APK
+        script: |
+          flutter build apk --release
+
     artifacts:
-      - build/outputs/apk/SA.apk
+      # Define the paths to the build artifacts to be saved by Codemagic
+      - build/app/outputs/flutter-apk/SA.apk
 
     publishing:
       # Optional: Configure email publishing
