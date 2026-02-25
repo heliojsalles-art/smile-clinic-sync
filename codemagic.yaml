@@ -1,33 +1,34 @@
+# The workflows key is used to define one or more CI/CD workflows.
 workflows:
-  android-build-workflow:
-    name: Android Build Workflow
-    # Specify the instance type (macOS in this case)
-    instance_type: mac_mini_m2 
-    max_build_duration: 60
+  android-debug-workflow:
+    # A descriptive name for the workflow
+    name: Android Gradle APK Build
     
+    # Specify the instance type (mac_mini_m2, in this case)
+    instance_type: mac_mini_m2
+    
+    # Environment variables configuration (optional, for code signing or specific SDK versions)
     environment:
-      # Optional: set up Java version if needed, default is fine for most cases
-      # java: "17" 
-      # Environment variables for code signing (defined in Codemagic UI)
-      groups:
-        # Replace 'android-signing-credentials' with your actual environment variable group name in Codemagic
-        - android-signing-credentials 
-
+     
     scripts:
       - name: Set up local properties
+    
         script: |
-          echo "sdk.dir=$HOME/programs/android-sdk" > "$CM_BUILD_DIR/local.properties"
+          #!/bin/sh
+          echo "sdk.dir=$ANDROID_HOME" > "$CM_BUILD_DIR/android/local.properties"
       
-      - name: Clean build
-        script: ./gradlew built
-        
-      - name: Build debug APK
-        # Use a signing config that uses the uploaded keystore for release builds
-        script: ./gradlew assembleRelease
+      - name: Grant execute permission to gradlew
+        script: |
+          chmod +x ./gradlew
 
+      - name: Build Android debug APK
+        # The command to run the Gradle build task
+        script: |
+          ./gradlew assembleDebug
+
+    # Artifacts section specifies which files to save after the build
     artifacts:
-      # Define which files to export as build artifacts
-      - build/SA.apk
+      - build/outputs/apk/SA.apk
 
     publishing:
       # Optional: Configure email publishing
