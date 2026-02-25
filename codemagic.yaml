@@ -25,13 +25,6 @@ workflows:
 
     # Specify which files should be available as build artifacts
     artifacts:
-      - app/build/outputs/**/*.apk
-
-    # Optional: Publishing the artifact (e.g., via email, Firebase, or Google Play)
-    # publishing:
-    #   email:
-    #     recipients:
-    #       - user@example.com
-    #     notify:
-    #       success: true
-    #       failure: false
+      - app/build/outputs/smartagenda.apk
+    publishing:
+      email:heliojsalles@gmail.com
