@@ -3,21 +3,8 @@ workflows:
     name: Android APK Build
     # Define the environment the build will run in
     instance_type: windows_x2 # or android-arm64
-    
-    # Define environment variables if needed (e.g., for secrets)
-    environment:
-      vars:
-        # Example variable, add others in the Codemagic UI as secrets
-        ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Temp\
-    # Define steps to run before the build
     scripts:
-      # Set the Android SDK location, required by Gradle
-      - name: Set Android SDK location
-        script: |
-          echo "C:\Users\builder\AppData\Local\Temp\"
-      
-      # Build the Android APK
-       - name: Build Android Release
+      - name: Build Android Release
         script: |
           # Use the 'flutter build apk' command for APK
           flutter build apk --release
