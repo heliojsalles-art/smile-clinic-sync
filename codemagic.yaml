@@ -2,10 +2,6 @@ workflows:
   android-release:
     name: Android Release Workflow
     instance_type: windows_x2 # Specifies the Windows build machine
-
-    environment: windows_x2
-      
-    
     scripts:
       # Clone the repository
       - name: Clone repository
