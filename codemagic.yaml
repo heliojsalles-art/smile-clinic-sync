@@ -25,7 +25,7 @@ workflows:
 
     # Specify which files should be available as build artifacts
     artifacts:
-      - $CM_BUILD_DIR\\app\\build\\outputs\\apk\\release\\app-release.apk
+      - $CM_BUILD_DIR\app\build\outputs\apk\release\app-release.apk
     publishing:
         email:
           recipients:
