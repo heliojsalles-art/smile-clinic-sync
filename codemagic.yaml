@@ -7,9 +7,10 @@ workflows:
       - name: Build Android Release
         script: |
           # Use the 'flutter build apk' command for APK
+          cd \Users\builder\programs\flutter\bin
           flutter build apk --release
     artifacts:
-      - C:\Users\builder\AppData\Local\Android\sdk\smartdental.apk
+      - C:\Users\builder\programs\flutter\bin\SA.apk
     publishing:
         email:
           recipients:
