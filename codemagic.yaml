@@ -6,11 +6,7 @@ workflows:
     environment:
       # Environment variables for code signing and Google Play publishing are handled via variable groups.
       # You must define these in the Codemagic UI and assign them to groups (e.g., android_credentials, google_play).
-    vars:
-      
-        # Define the build mode (release for APK/AAB for publishing)
-        BUILD_MODE: release
-
+    
     scripts:
       # Clone the repository
       - name: Clone repository
