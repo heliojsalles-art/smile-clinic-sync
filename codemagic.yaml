@@ -11,7 +11,7 @@ workflows:
       - name: Set up local properties
     
         script: |
-          ANDROID_HOME" > "/Users/builder/Library/Android/sdk"
+          ANDROID_HOME" > "/Users/builder/Library/Android/"
           ANDROID_SDK_ROOT" > "/Users/builder/Library/Android/sdk"
 
       
