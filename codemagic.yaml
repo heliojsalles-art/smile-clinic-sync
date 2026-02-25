@@ -27,9 +27,3 @@ workflows:
         email:
           recipients:
             - heliojsalles@gmail.com
-
-      
-      - name: Build Android Release
-        script: |
-          # Use the 'flutter build apk' command for APK
-          flutter build apk --release
