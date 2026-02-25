@@ -12,8 +12,8 @@ workflows:
     
         script: |
           #!/bin/sh
-          echo "sdk.dir=$ANDROID_HOME" > "$CM_BUILD_DIR/android/local.properties"
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+          echo "sdk.dir=$ANDROID_HOME" > "/Users/builder/Library/Android/sdk"
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "/Users/builder/Library/Android/sdk"
 
       
       - name: Grant execute permission to gradlew
