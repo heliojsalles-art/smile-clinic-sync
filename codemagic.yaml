@@ -21,7 +21,7 @@ workflows:
       - name: Build Android APK
         script: |
           cd C:\Users\builder\AppData\Local\Temp\
-          ./gradlew assembleRelease
+          gradlew assembleRelease
 
     # Specify which files should be available as build artifacts
     artifacts:
