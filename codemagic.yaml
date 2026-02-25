@@ -28,6 +28,6 @@ workflows:
       - build/app/outputs/apk/release/app-release.apk
     publishing:
         publishing:
-  email:
-    recipients:
-      - heliojsalles@gmail.com
+        email:
+          recipients:
+            - heliojsalles@gmail.com
