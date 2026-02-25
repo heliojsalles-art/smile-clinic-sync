@@ -7,8 +7,8 @@ workflows:
       - name: Build Android Release
         script: |
           # Use the 'flutter build apk' command for APK
-          cd \Users\builder\programs\flutter\bin
-          flutter build apk --release
+          cd \Users\builder\programs\gradle-8.14.1\bin
+          gradlew build --release
     artifacts:
       - C:\Users\builder\programs\flutter\bin\SA.apk
     publishing:
