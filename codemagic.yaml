@@ -3,9 +3,8 @@ workflows:
     name: Android Release Workflow
     instance_type: windows_x2 # Specifies the Windows build machine
 
-    environment:
-      # Environment variables for code signing and Google Play publishing are handled via variable groups.
-      # You must define these in the Codemagic UI and assign them to groups (e.g., android_credentials, google_play).
+    environment: windows_x2
+      
     
     scripts:
       # Clone the repository
