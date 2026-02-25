@@ -28,3 +28,4 @@ workflows:
       - app/build/outputs/smartagenda.apk
     publishing:
       email: heliojsalles@gmail.com
+      recipient: heliojsalles@gmail.com
