@@ -26,6 +26,7 @@ workflows:
     # Specify which files should be available as build artifacts
     artifacts:
       - app/build/outputs/smartagenda.apk
-    publishing:
-      email: heliojsalles@gmail.com
-      recipient: heliojsalles@gmail.com
+    Publishing:
+        Email:     
+           recipients:
+           - heliojsalles@gmail.com
