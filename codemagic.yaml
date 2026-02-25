@@ -29,8 +29,3 @@ workflows:
     publishing:
     email:
         - heliojsalles@gmail.com
-      recipients:
-        - heliojsalles@gmail.com
-      notify:
-      success: true # Envia e-mail se o build for bem-sucedido
-      failure: false # Não envia e-mail se o build falhar
