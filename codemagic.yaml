@@ -25,8 +25,8 @@ workflows:
 
     # Specify which files should be available as build artifacts
     artifacts:
-      - app/build/outputs/smartagenda.apk
-      publishing:
+      - build/app/outputs/apk/release/app-release.apk
+   publishing:
   email:
     recipients:
       - heliojsalles@gmail.com
@@ -34,4 +34,4 @@ workflows:
     body: 'Please find attached the latest APK.'
     # Specify the path to the generated APK
     assets:
-      - app/build/outputs/smartagenda.apk
+      - build/app/outputs/apk/release/app-release.apk
