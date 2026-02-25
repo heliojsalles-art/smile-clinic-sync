@@ -21,7 +21,7 @@ workflows:
       # Build the Android APK
       - name: Build Android APK
         script: |
-          ./gradlew assembleDebug # Use assembleRelease for a release build
+          ./gradlew assembleRelease
 
     # Specify which files should be available as build artifacts
     artifacts:
