@@ -7,9 +7,6 @@ workflows:
     # Specify the instance type (mac_mini_m2, in this case)
     instance_type: mac_mini_m2
     
-    # Environment variables configuration (optional, for code signing or specific SDK versions)
-    environment:
-     
     scripts:
       - name: Set up local properties
     
