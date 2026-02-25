@@ -9,19 +9,18 @@ workflows:
     environment:
       vars:
         # Example variable, add others in the Codemagic UI as secrets
-        ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Android\sdk
-
+        ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Temp\
     # Define steps to run before the build
     scripts:
       # Set the Android SDK location, required by Gradle
       - name: Set Android SDK location
         script: |
-          echo "C:\Users\builder\AppData\Local\Android\sdk"
+          echo "C:\Users\builder\AppData\Local\Temp\"
       
       # Build the Android APK
       - name: Build Android APK
         script: |
-          cd \Users\builder\AppData\Local\Android\sdk
+          cd C:\Users\builder\AppData\Local\Temp\
           ./gradlew assembleRelease
 
     # Specify which files should be available as build artifacts
