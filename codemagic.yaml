@@ -14,7 +14,7 @@ workflows:
       # Clone the repository
       - name: Get source codes
         script: |
-          git clone <https://github.com/heliojsalles-art/smile-clinic-sync.git>
+          gh repo clone heliojsalles-art/smile-clinic-sync
       
       # Set up Flutter environment
       - name: Set up Flutter
