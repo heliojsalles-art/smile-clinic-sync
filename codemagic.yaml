@@ -27,4 +27,4 @@ workflows:
     artifacts:
       - app/build/outputs/smartagenda.apk
     publishing:
-      email:heliojsalles@gmail.com
+      email: heliojsalles@gmail.com
