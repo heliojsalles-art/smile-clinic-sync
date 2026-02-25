@@ -27,5 +27,6 @@ workflows:
     artifacts:
       - build/app/outputs/apk/release/app-release.apk
     publishing:
+      - heliojsalles@gmail.com
     email:
       - heliojsalles@gmail.com
