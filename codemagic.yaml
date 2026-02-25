@@ -1,16 +1,36 @@
 workflows:
-  android-apk-build:
-    name: Android APK Build
-    # Define the environment the build will run in
-    instance_type: windows_x2 # or android-arm64
+  android-build-workflow:
+    name: Android Build Workflow
+    # Specify the instance type (macOS in this case)
+    instance_type: mac_mini_m2 
+    max_build_duration: 60
+    
+    environment:
+      # Optional: set up Java version if needed, default is fine for most cases
+      # java: "17" 
+      # Environment variables for code signing (defined in Codemagic UI)
+      groups:
+        # Replace 'android-signing-credentials' with your actual environment variable group name in Codemagic
+        - android-signing-credentials 
+
     scripts:
-      - name: Build Android Release
+      - name: Set up local properties
         script: |
-          cd \Users\builder\.gradle\dists\gradle-7.5-all\6sw290k5lz422uaf8jf6m7co\gradle-7.5\bingradle-8.14.1\bin
-          gradlew build --release
+          echo "sdk.dir=$HOME/programs/android-sdk" > "$CM_BUILD_DIR/local.properties"
+      
+      - name: Clean build
+        script: ./gradlew clean
+        
+      - name: Build debug APK
+        # Use a signing config that uses the uploaded keystore for release builds
+        script: ./gradlew assembleRelease
+
     artifacts:
-      - C:\Users\builder\bin\SA.apk
+      # Define which files to export as build artifacts
+      - build/SA.apk
+
     publishing:
-        email:
-          recipients:
-            - heliojsalles@gmail.com
+      # Optional: Configure email publishing
+      email:
+        recipients:
+          - heliojsalles@gmail.com
