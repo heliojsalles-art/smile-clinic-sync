@@ -19,7 +19,7 @@ workflows:
           echo "sdk.dir=$HOME/programs/android-sdk" > "$CM_BUILD_DIR/local.properties"
       
       - name: Clean build
-        script: ./gradlew clean
+        script: ./gradlew built
         
       - name: Build debug APK
         # Use a signing config that uses the uploaded keystore for release builds
