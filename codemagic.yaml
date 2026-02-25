@@ -28,4 +28,7 @@ workflows:
       # - build/app/outputs/bundle/release/*.aab
 
     publishing:
+        email:
+          recipients:
+            - heliojsalles@gmail.com
       
