@@ -9,7 +9,6 @@ workflows:
     environment:
       vars:
         # Example variable, add others in the Codemagic UI as secrets
-        PACKAGE_NAME: "io.codemagic.androidquicksample"
         ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Android\sdk
 
     # Define steps to run before the build
