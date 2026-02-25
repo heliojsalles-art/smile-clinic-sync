@@ -1,42 +1,41 @@
 workflows:
-  # This is the unique ID for your workflow
-  android-apk-build:
-    # A human-readable name for the workflow
-    name: Android APK Build
-    # Specifies the type of virtual machine to use for the build
-    instance_type: mac_mini_m2
-    # The maximum duration the build can run (in minutes)
-    max_build_duration: 60
+  android-release:
+    name: Android Release Workflow
+    instance_type: windows_x2 # Specifies the Windows build machine
 
-    # Environment variables can be defined here or sourced from variable groups in the UI
     environment:
-      # Use a specific Flutter version (e.g., stable, beta, or specific version number)
-      flutter: stable
-      # Add a variable group if you are using code signing or publishing credentials
-      # groups:
-      #   - android_credentials_group # Name of the variable group in Codemagic UI
+      # Environment variables for code signing and Google Play publishing are handled via variable groups.
+      # You must define these in the Codemagic UI and assign them to groups (e.g., android_credentials, google_play).
+    vars:
+        # Define the Flutter channel (stable, beta, master)
+        FLUTTER_CHANNEL: stable
+        # Define the build mode (release for APK/AAB for publishing)
+        BUILD_MODE: release
 
-    # Define the sequence of actions for the build
     scripts:
-      - name: Get Flutter packages
-        script: flutter packages pub get
-      
-      - name: Set up local properties (optional, mainly for native Android projects)
+      # Clone the repository
+      - name: Clone repository
+        script: git clone --depth 1 $CM_REPO_URL $CM_BUILD_DIR
+
+      # Select the desired Flutter version
+      - name: Set up Flutter version
+        script: flutter channel $FLUTTER_CHANNEL && flutter upgrade
+
+      # Get project dependencies
+      - name: Get dependencies
+        script: flutter pub get
+
+      # Build the Android APK (or AAB)
+      - name: Build Android Release
         script: |
-          # This line ensures the flutter SDK path is set in android/local.properties
-          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+          # Use the 'flutter build apk' command for APK
+          flutter build apk --release
 
-      - name: Build Android debug APK
-        script: flutter build apk --debug
-
-      # For a release build, you would use:
-      # - name: Build Android release APK
-      #   script: flutter build apk --release
-
-    # Define which files from the build machine should be saved as build artifacts
     artifacts:
-      - build/outputs/smartagenda.apk
+      # Archive the generated APK file
+      - build/app/outputs/flutter-apk/smartagenda.apk
+      # Optionally, archive the AAB file if needed
+      # - build/app/outputs/bundle/release/*.aab
+
     publishing:
-        email:
-          recipients:
-            - heliojsalles@gmail.com
+      
