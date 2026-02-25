@@ -20,9 +20,7 @@ workflows:
       # Build the Android APK
       - name: Build Android APK
         script: |
-          cd C:\Users\builder\AppData\Local\Temp\
-          gradlew assembleRelease
-
+          flutter build apk
     # Specify which files should be available as build artifacts
     artifacts:
       - C:\Users\builder\AppData\Local\Android\sdk\smartdental.apk
