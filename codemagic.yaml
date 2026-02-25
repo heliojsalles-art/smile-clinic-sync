@@ -26,12 +26,11 @@ workflows:
     # Specify which files should be available as build artifacts
     artifacts:
       - build/app/outputs/apk/release/app-release.apk
-   publishing:
-  email:
-    recipients:
-      - heliojsalles@gmail.com
-    subject: 'New APK Build'
-    body: 'Please find attached the latest APK.'
-    # Specify the path to the generated APK
-    assets:
-      - build/app/outputs/apk/release/app-release.apk
+    publishing:
+        email:
+          recipients:
+          - heliojsalles@gmail.com
+          subject: 'New APK Build'
+        body: 'Please find attached the latest APK.'
+        assets:
+          - build/app/outputs/apk/release/app-release.apk
