@@ -1,1 +1,37 @@
+# The name of the workflow is displayed in the Codemagic UI
+workflows:
+  android-apk-build:
+    name: Android APK Build
+    # Define the environment the build will run in
+    instance_type: mac_pro # or android-arm64
+    
+    # Define environment variables if needed (e.g., for secrets)
+    environment:
+      vars:
+        # Example variable, add others in the Codemagic UI as secrets
+        PACKAGE_NAME: "io.codemagic.androidquicksample"
 
+    # Define steps to run before the build
+    scripts:
+      # Set the Android SDK location, required by Gradle
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      
+      # Build the Android APK
+      - name: Build Android APK
+        script: |
+          ./gradlew assembleDebug # Use assembleRelease for a release build
+
+    # Specify which files should be available as build artifacts
+    artifacts:
+      - app/build/outputs/**/*.apk
+
+    # Optional: Publishing the artifact (e.g., via email, Firebase, or Google Play)
+    # publishing:
+    #   email:
+    #     recipients:
+    #       - user@example.com
+    #     notify:
+    #       success: true
+    #       failure: false
