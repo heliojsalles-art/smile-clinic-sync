@@ -1,34 +1,35 @@
 workflows:
-  android-release:
-    name: Android Release Workflow
-    instance_type: windows_x2 # Specifies the Windows build machine
+  android-apk-build:
+    name: Android APK Build
+    # Define the environment the build will run in
+    instance_type: windows_x2 # or android-arm64
+    
+    # Define environment variables if needed (e.g., for secrets)
+    environment:
+      vars:
+        # Example variable, add others in the Codemagic UI as secrets
+        ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Temp\
+    # Define steps to run before the build
     scripts:
-      # Clone the repository
-      - name: Clone repository
-        script: git clone --depth 1 $CM_REPO_URL $CM_BUILD_DIR
-
-      # Select the desired Flutter version
-      - name: Set up Flutter version
-        script: flutter channel $FLUTTER_CHANNEL && flutter upgrade
-
-      # Get project dependencies
-      - name: Get dependencies
-        script: flutter pub get
-
-      # Build the Android APK (or AAB)
-      - name: Build Android Release
+      # Set the Android SDK location, required by Gradle
+      - name: Set Android SDK location
+        script: |
+          echo "C:\Users\builder\AppData\Local\Temp\"
+      
+      # Build the Android APK
+       - name: Build Android Release
         script: |
           # Use the 'flutter build apk' command for APK
           flutter build apk --release
-
     artifacts:
-      # Archive the generated APK file
-      - build/app/outputs/flutter-apk/smartagenda.apk
-      # Optionally, archive the AAB file if needed
-      # - build/app/outputs/bundle/release/*.aab
-
+      - C:\Users\builder\AppData\Local\Android\sdk\smartdental.apk
     publishing:
         email:
           recipients:
             - heliojsalles@gmail.com
+
       
+      - name: Build Android Release
+        script: |
+          # Use the 'flutter build apk' command for APK
+          flutter build apk --release
