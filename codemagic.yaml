@@ -10,23 +10,24 @@ workflows:
       vars:
         # Example variable, add others in the Codemagic UI as secrets
         PACKAGE_NAME: "io.codemagic.androidquicksample"
+        ANDROID_SDK_ROOT: C:\Users\builder\AppData\Local\Android\sdk
 
     # Define steps to run before the build
     scripts:
       # Set the Android SDK location, required by Gradle
       - name: Set Android SDK location
         script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+          echo "C:\Users\builder\AppData\Local\Android\sdk"
       
       # Build the Android APK
       - name: Build Android APK
         script: |
-          cd $ANDROID_SDK_ROOT
+          cd \Users\builder\AppData\Local\Android\sdk
           ./gradlew assembleRelease
 
     # Specify which files should be available as build artifacts
     artifacts:
-      - $CM_BUILD_DIR\app\build\outputs\apk\release\app-release.apk
+      - C:\Users\builder\AppData\Local\Android\sdk\smartdental.apk
     publishing:
         email:
           recipients:
