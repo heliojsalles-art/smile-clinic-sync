@@ -3,7 +3,7 @@ workflows:
   android-apk-build:
     name: Android APK Build
     # Define the environment the build will run in
-    instance_type: linux # or android-arm64
+    instance_type: macos # or android-arm64
     
     # Define environment variables if needed (e.g., for secrets)
     environment:
