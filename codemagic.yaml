@@ -40,7 +40,6 @@ steps:
         script:
           - flutter build apk --release --build-name=1.0.$CM_BUILD_NUMBER --build-number=$CM_BUILD_NUMBER #
 
-    # Artifacts to export (the generated APK)
     artifacts:
       - app/build/outputs/apk/release/sa.apk #
     
