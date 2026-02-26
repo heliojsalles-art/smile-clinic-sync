@@ -1,24 +1,48 @@
+# The name of your workflow, which will be displayed in the Codemagic UI.
 workflows:
-  grabber-android-build:
-    name: Grabber Android Build
-    instance_type: mac_mini_m2 # Use a macOS instance type
+  android-release:
+    name: Android Release Build
+    # Specify the build machine type.
+    instance_type: mac_mini_m2 #
 
-    scripts:
-      - name: Set up environment and build with Grabber
-        script: |
-          cd /users/builder/programs/gradle-8.14.1/bin/
-          grabber build android sa.apk
-          
-          # You may need to copy the generated APK to a standard artifacts directory
-          # for Codemagic to find it easily. Check your specific Grabber output path.
-          # Example:
-          cp sa.apk $CM_ARTIFACT_DIR/sa.apk
+    # Environment variables (optional, for code signing)
+    environment:
+      vars:
+        PACKAGE_NAME: "sa" # Replace with your package name
 
+    # Define the steps for the build process.
+    steps:
+      - name: Clone repository
+        script:
+          - git clone $CM_REPO_URL $CM_BUILD_DIR
+          - cd $CM_BUILD_DIR
+          - git checkout $CM_BRANCH
+
+      - name: Set up Flutter
+        script:
+          # This uses the version/channel defined in the "environment" section
+          - flutter channel stable
+          - flutter upgrade
+          - flutter doctor
+
+      - name: Get dependencies
+        script:
+          - flutter pub get
+
+      # Optional: Add a step for build versioning (e.g., using the built-in build number)
+      - name: Set Android build number and version
+        script:
+          - echo "flutter build name: 1.0.$CM_BUILD_NUMBER"
+          - echo "flutter build number: $CM_BUILD_NUMBER"
+
+      - name: Build Android APK
+        script:
+          - flutter build apk --release --build-name=1.0.$CM_BUILD_NUMBER --build-number=$CM_BUILD_NUMBER #
+
+    # Artifacts to export (the generated APK)
     artifacts:
-      # Specifies the path where the resulting APK artifacts are located.
-      - app/build/outputs/sa.apk # Adjust path based on your project structure
-
-   
+      - app/build/outputs/apk/release/sa.apk #
+    
     publishing:
       # Optional: Configure email publishing
       email:
