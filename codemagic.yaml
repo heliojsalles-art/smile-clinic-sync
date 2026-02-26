@@ -5,7 +5,8 @@ workflows:
     scripts:
       - name: Set up local properties
         script: |
-          echo "sdk.dir=$ANDROID_HOME" > "$FCI_BUILD_DIR/local.properties"
+      SDK_PATH=${ANDROID_HOME:-$ANDROID_SDK_ROOT}
+      echo "sdk.dir=$SDK_PATH" > "$FCI_BUILD_DIR/local.properties"
       - name: Run Gradle assembleRelease
         script: |
           # Use ./gradlew in the project's root directory
