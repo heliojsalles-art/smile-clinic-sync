@@ -29,8 +29,8 @@ steps:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: sa.apk
+          path: users\builder\build_outputs\sa.apk
 artifacts:
   - users\builder\build_outputs\sa.apk #
     
