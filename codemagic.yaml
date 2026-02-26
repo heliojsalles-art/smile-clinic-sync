@@ -13,10 +13,7 @@ workflows:
       - name: Get dependencies
         script: 
           flutter packages pub get
-      - name: find filrs
-        script:
-          find . -name "pubspec.yaml"
-      - name: Build Android APK
+      - name: Anfoid
         script: |
           flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
     artifacts:
