@@ -11,9 +11,15 @@ workflows:
         PACKAGE_NAME: "sa"
 
     scripts:
+      - name: Debug Folder Structure
+        script: |
+          ls -R # Isso vai listar todos os arquivos para você ver onde está o pubspec.yaml
       - name: Get dependencies
         script: |
+          # Tenta limpar o cache antes de baixar
+          flutter pub cache repair 
           flutter packages pub get
+
       
       - name: Build Android APK
         script: |
