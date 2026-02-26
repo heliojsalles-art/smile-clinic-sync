@@ -17,7 +17,6 @@ steps:
         script: |
            - git clone https://github.com/heliojsalles-art/smile-clinic-sync.git $sa
            - cd $sa
-           - git checkout $sa
 
       - name: Get dependencies
         script:
