@@ -3,7 +3,7 @@ workflows:
     name: sa
     instance_type: mac_mini_m2 
     # Use '.' para a raiz do projeto onde está o pubspec.yaml
-    working_directory: /Users/builder/programs/flotter
+    working_directory: /Users/builder/programs/flotter/bin
     max_build_duration: 60
     environment:
       flutter: stable
