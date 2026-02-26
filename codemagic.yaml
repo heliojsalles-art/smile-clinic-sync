@@ -11,11 +11,12 @@ workflows:
         PACKAGE_NAME: "sa"
     scripts:
       - name: Get dependencies
-        script: |
+        script: 
           flutter pub get
     scripts:
        - name: find filrs
-         find . -name "pubspec.yaml"
+        script:
+          find . -name "pubspec.yaml"
       - name: Build Android APK
         script: |
           flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
