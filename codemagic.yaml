@@ -17,7 +17,7 @@ workflows:
     script: |
         git clone https://github.com/heliojsalles-art/smile-clinic-sync.git
         script: - cd $sa
-        script: - git checkout $CM_BRANCH
+        script: - git checkout $sa
 
       - name: Set up Flutter
         script:
