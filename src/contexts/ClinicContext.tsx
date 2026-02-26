@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { Patient, Appointment, WhatsAppTemplate } from '@/types/clinic';
+import { Patient, Appointment, WhatsAppTemplate, ClinicSettings } from '@/types/clinic';
 
 interface ClinicContextType {
   patients: Patient[];
   appointments: Appointment[];
   templates: WhatsAppTemplate;
+  settings: ClinicSettings;
   addPatient: (data: Omit<Patient, 'id' | 'createdAt'>) => Patient;
   updatePatient: (id: string, data: Partial<Patient>) => void;
   deletePatient: (id: string) => void;
@@ -12,8 +13,10 @@ interface ClinicContextType {
   deleteAppointment: (id: string) => void;
   getPatientById: (id: string) => Patient | undefined;
   getAppointmentsForDate: (date: string) => Appointment[];
+  getAppointmentsForDateRange: (startDate: string, endDate: string) => Appointment[];
   getLastAppointment: (patientId: string) => Appointment | undefined;
   updateTemplates: (templates: WhatsAppTemplate) => void;
+  updateSettings: (settings: ClinicSettings) => void;
 }
 
 const ClinicContext = createContext<ClinicContextType | null>(null);
@@ -27,6 +30,11 @@ function loadFromStorage<T>(key: string, fallback: T): T {
   }
 }
 
+const DEFAULT_SETTINGS: ClinicSettings = {
+  clinicName: 'Salles Ateliê Odontológico',
+  dentistName: '',
+};
+
 const DEFAULT_TEMPLATES: WhatsAppTemplate = {
   appointmentReminder: 'Olá {nome}! 😊 Lembramos que sua consulta na Salles Ateliê Odontológico está marcada para o dia {data} às {horario}. Aguardamos você! 🦷',
   recallReminder: 'Olá {nome}! 😊 Sabia que é muito importante retornar ao dentista a cada 6 meses para uma avaliação completa? Além disso, realizar uma limpeza profissional a cada 6 meses ajuda a prevenir cáries, doenças na gengiva e manter seu sorriso sempre saudável! 🦷✨ Se quiser marcar sua consulta na Salles Ateliê Odontológico, é só nos enviar uma mensagem por aqui mesmo! Estamos à disposição! 😊',
@@ -37,10 +45,12 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   const [patients, setPatients] = useState<Patient[]>(() => loadFromStorage('clinic_patients', []));
   const [appointments, setAppointments] = useState<Appointment[]>(() => loadFromStorage('clinic_appointments', []));
   const [templates, setTemplates] = useState<WhatsAppTemplate>(() => loadFromStorage('clinic_templates', DEFAULT_TEMPLATES));
+  const [settings, setSettings] = useState<ClinicSettings>(() => loadFromStorage('clinic_settings', DEFAULT_SETTINGS));
 
   useEffect(() => { localStorage.setItem('clinic_patients', JSON.stringify(patients)); }, [patients]);
   useEffect(() => { localStorage.setItem('clinic_appointments', JSON.stringify(appointments)); }, [appointments]);
   useEffect(() => { localStorage.setItem('clinic_templates', JSON.stringify(templates)); }, [templates]);
+  useEffect(() => { localStorage.setItem('clinic_settings', JSON.stringify(settings)); }, [settings]);
 
   const addPatient = useCallback((data: Omit<Patient, 'id' | 'createdAt'>) => {
     const patient: Patient = { ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
@@ -72,6 +82,11 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
     [appointments]
   );
 
+  const getAppointmentsForDateRange = useCallback((startDate: string, endDate: string) =>
+    appointments.filter(a => a.date >= startDate && a.date <= endDate).sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`)),
+    [appointments]
+  );
+
   const getLastAppointment = useCallback((patientId: string) => {
     const patientAppts = appointments
       .filter(a => a.patientId === patientId)
@@ -80,14 +95,15 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   }, [appointments]);
 
   const updateTemplates = useCallback((t: WhatsAppTemplate) => setTemplates(t), []);
+  const updateSettings = useCallback((s: ClinicSettings) => setSettings(s), []);
 
   return (
     <ClinicContext.Provider value={{
-      patients, appointments, templates,
+      patients, appointments, templates, settings,
       addPatient, updatePatient, deletePatient,
       addAppointment, deleteAppointment,
-      getPatientById, getAppointmentsForDate, getLastAppointment,
-      updateTemplates,
+      getPatientById, getAppointmentsForDate, getAppointmentsForDateRange, getLastAppointment,
+      updateTemplates, updateSettings,
     }}>
       {children}
     </ClinicContext.Provider>

@@ -30,3 +30,8 @@ export interface WhatsAppTemplate {
   recallReminder: string;
   birthdayGreeting: string;
 }
+
+export interface ClinicSettings {
+  clinicName: string;
+  dentistName: string;
+}
