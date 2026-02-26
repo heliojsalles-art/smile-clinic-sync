@@ -3,7 +3,7 @@ workflows:
     name: sa
     instance_type: mac_mini_m2 
     # ADICIONE O NOME DA PASTA ONDE ESTÁ O SEU PUBSPEC.YAML
-    working_directory: Users/builder/programs/flutter_3_38_5
+    working_directory: Users/builder/programs/flutter_3_38_5/bin
     max_build_duration: 60
     environment:
       flutter: stable
@@ -11,9 +11,7 @@ workflows:
         PACKAGE_NAME: "sa"
 
     scripts:
-      - name: Debug Folder Structure
-        script: |
-          ls -R # Isso vai listar todos os arquivos para você ver onde está o pubspec.yaml
+    
       - name: Get dependencies
         script: |
           # Tenta limpar o cache antes de baixar
@@ -28,7 +26,7 @@ workflows:
 
     artifacts:
       # Use caminhos relativos ao working_directory ou glob patterns
-      - Users/builder/programs/flutter_3_38_5/sa.apk
+      - Users/builder/programs/flutter_3_38_5/bin/sa.apk
       - Users/builder/build_outputs/sa.apk
     publishing:
       email:
