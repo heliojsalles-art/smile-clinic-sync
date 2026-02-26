@@ -9,6 +9,13 @@ workflows:
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
       - name: Build Android APK
         script: | 
+           # 1. Entra na pasta onde o gradle realmente está
+          cd android 
+          
+          # 2. Cria o arquivo de configuração do SDK lá dentro
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          
+          # 3. Dá permissão e roda o build
           chmod +x gradlew
           ./gradlew assembleRelease
     artifacts:
