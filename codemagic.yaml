@@ -14,14 +14,10 @@ workflows:
       - name: Get dependencies
         script: |
           - flutter pub get
-    scripts: | 
-      - name: Build Android APK
+   scripts: | 
+   - name: Build Android APK
         script: |
           - flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
-    script: 
-          # O build number precisa do prefixo $ para ser lido como variável
-         flutter build apk --release --build-name=sa --build-number=${BUILD_NUMBER:-1}
-
     artifacts:
       # O Codemagic busca a partir da pasta do projeto definida acima
       - build/app/outputs/flutter-apk/*.apk
