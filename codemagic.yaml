@@ -13,7 +13,7 @@ workflows:
       - name: Get dependencies
         script: 
           flutter pub get
-       - name: find filrs
+      - name: find filrs
         script:
           find . -name "pubspec.yaml"
       - name: Build Android APK
