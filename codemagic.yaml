@@ -13,10 +13,9 @@ workflows:
     # Define the steps for the build process.
     steps:
       - name: Clone repository
-        script:
-          - git clone $CM_REPO_URL $CM_BUILD_DIR
-          - cd $CM_BUILD_DIR
-          - git checkout $CM_BRANCH
+        script: - git clone $CM_REPO_URL $CM_BUILD_DIR
+        script: - cd $CM_BUILD_DIR
+        script: - git checkout $CM_BRANCH
 
       - name: Set up Flutter
         script:
