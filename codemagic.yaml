@@ -21,7 +21,7 @@ steps:
 
       - name: Get dependencies
         script:
-          - flutter pub get
+          - flutter packages pub get
 
       - name: Build Android APK
         script:
