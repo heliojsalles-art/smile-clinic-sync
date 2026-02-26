@@ -6,13 +6,13 @@ workflows:
     scripts:
       - name: Set up environment and build with Grabber
         script: |
-          alias grabber='\users\builder\programs\gradle-8.14.1\bin'
-          \users\builder\programs\gradle-8.14.1\bin\grabber build android sa.apk
+          cd \users\builder\programs\gradle-8.14.1\bin\
+          grabber build android sa.apk
           
           # You may need to copy the generated APK to a standard artifacts directory
           # for Codemagic to find it easily. Check your specific Grabber output path.
           # Example:
-          cp /path/to/your/app-release.apk $CM_ARTIFACT_DIR/app-release.apk
+          cp sa.apk $CM_ARTIFACT_DIR/sa.apk
 
     artifacts:
       # Specifies the path where the resulting APK artifacts are located.
