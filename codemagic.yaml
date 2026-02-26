@@ -6,14 +6,6 @@ workflows:
     scripts:
       - name: Set up environment and build with Grabber
         script: |
-          # The Android SDK is pre-installed and available via default variables.
-          # The main variable is ANDROID_HOME.
-          echo "ANDROID_HOME is set to: $ANDROID_HOME"
-          
-          # Assuming 'grabber' command is in the system's PATH. 
-          # You will need to adjust the actual command based on how your 
-          # Grabber project builds an Android APK. 
-          # This is a placeholder command.
           alias grabber='/users\builder\programs\gradle-8.14.1\bin'
           grabber build android sa.apk
           
