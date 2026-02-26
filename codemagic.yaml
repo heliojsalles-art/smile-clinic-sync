@@ -33,15 +33,15 @@ steps:
       # Optional: Add a step for build versioning (e.g., using the built-in build number)
       - name: Set Android build number and version
         script:
-          - echo "flutter build name: 1.0.$CM_BUILD_NUMBER"
-          - echo "flutter build number: $CM_BUILD_NUMBER"
+          - echo "flutter build name: 1.0.$1.0"
+          - echo "flutter build number: $1.0"
 
       - name: Build Android APK
         script:
-          - flutter build apk --release --build-name=1.0.$CM_BUILD_NUMBER --build-number=$CM_BUILD_NUMBER #
+          - flutter build apk --release --build-name=1.0.$1.0 --build-number=$1.0 #
 
 artifacts:
-  - sa.apk #
+  - users\builder\sa.apk #
     
 publishing:
   email:
