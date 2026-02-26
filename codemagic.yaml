@@ -13,7 +13,9 @@ workflows:
       - name: Listar arquivos para Debug
         script: find . -name "pubspec.yaml"
       - name: Get dependencies
-        script: flutter packages pub get
+        script: |
+          - cd /Users/builder/programs/flutter/
+          - flutter packages pub get
       - name: Android build
         script: |
           # Builda o APK em modo release
