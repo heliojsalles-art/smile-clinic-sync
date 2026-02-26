@@ -14,7 +14,7 @@ workflows:
           # You will need to adjust the actual command based on how your 
           # Grabber project builds an Android APK. 
           # This is a placeholder command.
-          grabber build android
+          grabber build android sa.apk
           
           # You may need to copy the generated APK to a standard artifacts directory
           # for Codemagic to find it easily. Check your specific Grabber output path.
