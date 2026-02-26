@@ -41,7 +41,7 @@ steps:
           - flutter build apk --release --build-name=1.0.$1.0 --build-number=$1.0 #
 
 artifacts:
-  - users\builder\sa.apk #
+  - users\builder\build_outputs\sa.apk #
     
 publishing:
   email:
