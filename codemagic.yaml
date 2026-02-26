@@ -10,7 +10,7 @@ workflows:
       - name: Build Android APK
         script: | 
            # 1. Entra na pasta onde o gradle realmente está
-          cd android 
+          cd /android 
           
           # 2. Cria o arquivo de configuração do SDK lá dentro
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
