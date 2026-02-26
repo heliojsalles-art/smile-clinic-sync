@@ -14,6 +14,15 @@ workflows:
     scripts:
       - name: Get dependencies
         script: flutter pub get
+      - name: List files to find pubspec
+        script: |
+          echo "Diretório atual: $(pwd)"
+          find . -maxdepth 2 -name "pubspec.yaml"
+      - name: Get dependencies
+        script: |
+          # Se o pubspec estiver em uma subpasta, entre nela primeiro
+          # cd nome_da_sua_pasta 
+          flutter pub get
       - name: Build Android APK
         script: |
           # O build number precisa do prefixo $ para ser lido como variável
