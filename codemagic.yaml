@@ -11,10 +11,11 @@ workflows:
         PACKAGE_NAME: "sa"
     scripts:
       - name: Android build
-        script: |
+        script:
           flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
+      - Users/builder/build_outputs/
     publishing:
       email:
         recipients:
