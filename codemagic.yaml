@@ -1,53 +1,33 @@
-# The name of the workflow, displayed in the Codemagic UI
 workflows:
-  android-release:
-    name: Android Release Build
-    # Use a macOS instance for the build
-    instance_type: mac_mini_m2
-
+  grabber-android-build:
+    name: Grabber Android Build
+    instance_type: mac_mini_m2 # Use a macOS instance type
     environment:
-      # Define the Flutter version to use (e.g., stable, beta, 3.7.6)
-      flutter: stable
-
+      - android_signing_credentials
+          
     scripts:
-      - name: Clone private submodule
+      - name: Set up environment and build with Grabber
         script: |
-         git clone https://github.com/heliojsalles-art/smile-clinic-sync.git
-    scripts:
-      # Clone the repository
-      - name: Get source codes
-        script: |
-          gh repo clone https://github.com/heliojsalles-art/smile-clinic-sync.git
-      
-      # Set up Flutter environment
-      - name: Set up Flutter
-        script: |
-          flutter channel $FLUTTER_VERSION
-          flutter upgrade
-      
-      # Get Flutter dependencies
-      - name: Get dependencies
-        script: |
-          flutter pub get
-
-      # Optional: Add script for build versioning (e.g., using Codemagic CLI tools)
-      # - name: Increment build number
-      #   script: |
-      #     # Example using Codemagic's built-in tools for versioning
-      #     # Check Codemagic documentation for specifics
-      #     # latest_build_number=$(app-store-connect get-latest-build-number --bundle-id "<your_bundle_id>")
-      #     # new_build_number=$(($latest_build_number + 1))
-      #     # flutter build apk --build-number=$new_build_number
-      
-      # Build the Android APK in release mode
-      - name: Build Android APK
-        script: |
-          flutter build apk --release
+          # The Android SDK is pre-installed and available via default variables.
+          # The main variable is ANDROID_HOME.
+          echo "ANDROID_HOME is set to: $ANDROID_HOME"
+          
+          # Assuming 'grabber' command is in the system's PATH. 
+          # You will need to adjust the actual command based on how your 
+          # Grabber project builds an Android APK. 
+          # This is a placeholder command.
+          grabber build android
+          
+          # You may need to copy the generated APK to a standard artifacts directory
+          # for Codemagic to find it easily. Check your specific Grabber output path.
+          # Example:
+          cp /path/to/your/app-release.apk $CM_ARTIFACT_DIR/app-release.apk
 
     artifacts:
-      # Define the paths to the build artifacts to be saved by Codemagic
-      - build/app/outputs/flutter-apk/SA.apk
+      # Specifies the path where the resulting APK artifacts are located.
+      - app/build/outputs/sa.apk # Adjust path based on your project structure
 
+   
     publishing:
       # Optional: Configure email publishing
       email:
