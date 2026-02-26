@@ -2,8 +2,9 @@ workflows:
   android-release:
     name: sa
     instance_type: mac_mini_m2 
-    # ADICIONE O NOME DA PASTA ONDE ESTÁ O SEU PUBSPEC.YAML
-    working_directory: Users/builder/programs/flutter
+    # Mantenha '.' se o pubspec.yaml estiver na raiz. 
+    # Se estiver em uma pasta, use apenas o nome dela (ex: 'app_folder')
+    working_directory: . 
     max_build_duration: 60
     environment:
       flutter: stable
@@ -11,16 +12,16 @@ workflows:
         PACKAGE_NAME: "sa"
 
     scripts:
-      
+      - name: Get dependencies
+        script: flutter pub get
       - name: Build Android APK
         script: |
-          # O Codemagic injeta o BUILD_NUMBER automaticamente se configurado
+          # O build number precisa do prefixo $ para ser lido como variável
           flutter build apk --release --build-name=sa --build-number=${BUILD_NUMBER:-1}
 
     artifacts:
-      # Use caminhos relativos ao working_directory ou glob patterns
-      - Users/builder/programs/flutter/bin/sa.apk
-      - Users/builder/build_outputs/sa.apk
+      # O Codemagic busca a partir da pasta do projeto definida acima
+      - build/app/outputs/flutter-apk/*.apk
     publishing:
       email:
         recipients:
