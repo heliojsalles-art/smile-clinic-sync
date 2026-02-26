@@ -1,22 +1,44 @@
 workflows:
-  android-workflow:
-    name: Android APK Workflow
-    max_build_duration: 60
+  android-apk-build:
+    name: Android APK Build on macOS
+    # Specify the macOS instance type for the builder
+    # Available types can be found in the Codemagic documentation
     instance_type: mac_mini_m2
+
+    # Environment variables (optional, but recommended for secrets like code signing)
+    environment:
+      # Use variable groups defined in Codemagic Team settings for security
+      groups:
+        - keystore_credentials # Contains CM_KEYSTORE, CM_KEYSTORE_PASSWORD, etc.
+      vars:
+        # Define the path where the APK will be generated relative to the project root
+        APK_OUTPUT_PATH: "app/build/outputs/apk/release/app-release.apk"
+
+    # Define the steps to run
     scripts:
+      - name: Fetch code signing credentials
+        # This command fetches the keystore and related passwords from the configured
+        # environment variables and makes them available to Gradle
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > $CM_BUILD_DIR/keystore.jks
+      
       - name: Set up local properties
-        script: | 
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-      - name: Build Android APK
-        script: | 
-           # 1. Entra na pasta onde o gradle realmente está
-          cd /android 
-          
-          # 2. Cria o arquivo de configuração do SDK lá dentro
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          
-          # 3. Dá permissão e roda o build
-          chmod +x gradlew
+        # This script ensures local.properties exists and sets the SDK path
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      
+      - name: Build Android release APK with Gradle
+        # Run the Gradle command to assemble the release APK
+        # Ensure your app/build.gradle is configured to use the signing variables
+        # (Refer to Codemagic docs for configuring build.gradle signingConfig)
+        script: |
           ./gradlew assembleRelease
+
+    # Artifacts (the resulting files to save)
     artifacts:
-      - app/build/outputs/apk/release/*.apk
+      - $APK_OUTPUT_PATH
+    
+    # Publishing (optional, e.g., to Firebase App Distribution or Google Play)
+    # publishing:
+    #   firebase:
+    #     ...
