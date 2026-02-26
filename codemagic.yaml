@@ -3,7 +3,7 @@ workflows:
     name: sa
     instance_type: mac_mini_m2 
     # ADICIONE O NOME DA PASTA ONDE ESTÁ O SEU PUBSPEC.YAML
-    working_directory: Users/builder/programs/flutter_3_38_5/bin
+    working_directory: Users/builder/programs/flutter
     max_build_duration: 60
     environment:
       flutter: stable
@@ -19,7 +19,7 @@ workflows:
 
     artifacts:
       # Use caminhos relativos ao working_directory ou glob patterns
-      - Users/builder/programs/flutter_3_38_5/bin/sa.apk
+      - Users/builder/programs/flutter/bin/sa.apk
       - Users/builder/build_outputs/sa.apk
     publishing:
       email:
