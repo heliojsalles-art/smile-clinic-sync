@@ -2,27 +2,28 @@ workflows:
   android-release:
     name: sa
     instance_type: mac_mini_m2 
+    # ADICIONE O NOME DA PASTA ONDE ESTÁ O SEU PUBSPEC.YAML
+    working_directory: Users/builder/programs/flutter_3_38_5
     max_build_duration: 60
     environment:
-      flutter: stable # Define a versão do Flutter
+      flutter: stable
       vars:
         PACKAGE_NAME: "sa"
 
     scripts:
-      # O Codemagic já clona seu repo automaticamente na pasta $CM_BUILD_DIR
       - name: Get dependencies
         script: |
           flutter packages pub get
       
       - name: Build Android APK
         script: |
-          # O comando 'build apk' gera o arquivo em build/app/outputs/flutter-apk/
-          flutter build apk --release --build-name=sa --build-number=$1.0
+          # O Codemagic injeta o BUILD_NUMBER automaticamente se configurado
+          flutter build apk --release --build-name=sa --build-number=${BUILD_NUMBER:-1}
 
     artifacts:
-      # Caminho padrão onde o Flutter despeja o APK no macOS/Linux
-      - Users/builder/build_outputs/
-    
+      # Use caminhos relativos ao working_directory ou glob patterns
+      - Users/builder/programs/flutter_3_38_5/sa.apk
+      - Users/builder/build_outputs/sa.apk
     publishing:
       email:
         recipients:
