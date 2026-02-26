@@ -11,13 +11,13 @@ workflows:
         PACKAGE_NAME: "sa" # Replace with your package name
 
     # Define the steps for the build process.
-    steps:
-      scripts:
-  - name: Clone repository
-    script: |
-        git clone https://github.com/heliojsalles-art/smile-clinic-sync.git
-        script: - cd $sa
-        script: - git checkout $sa
+steps:
+   scripts:
+     - name: Clone repository
+         script: |
+           - git clone https://github.com/heliojsalles-art/smile-clinic-sync.git
+           - cd $sa
+           - git checkout $sa
 
       - name: Set up Flutter
         script:
