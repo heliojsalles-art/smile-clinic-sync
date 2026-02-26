@@ -19,26 +19,13 @@ steps:
            - cd $sa
            - git checkout $sa
 
-      - name: Set up Flutter
-        script:
-          # This uses the version/channel defined in the "environment" section
-          - flutter channel stable
-          - flutter upgrade
-          - flutter doctor
-
       - name: Get dependencies
         script:
           - flutter pub get
 
-      # Optional: Add a step for build versioning (e.g., using the built-in build number)
-      - name: Set Android build number and version
-        script:
-          - echo "flutter build name: 1.0.$1.0"
-          - echo "flutter build number: $1.0"
-
       - name: Build Android APK
         script:
-          - flutter build apk --release --build-name=1.0.$1.0 --build-number=$1.0 #
+          - flutter build apk --release
 
 artifacts:
   - users\builder\build_outputs\sa.apk #
