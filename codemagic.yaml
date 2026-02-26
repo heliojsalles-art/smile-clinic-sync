@@ -13,7 +13,6 @@ workflows:
       - name: Get dependencies
         script: 
           flutter pub get
-    scripts:
        - name: find filrs
         script:
           find . -name "pubspec.yaml"
