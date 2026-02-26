@@ -2,7 +2,7 @@ workflows:
   android-apk-build:
     name: Android APK Build
     instance_type: mac_mini_m2 # Or another macOS instance type
-     scripts:
+scripts:
   - name: Set up local properties
     script: | 
       # Garante que estamos usando o caminho correto no macOS do Codemagic
