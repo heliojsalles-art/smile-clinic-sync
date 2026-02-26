@@ -12,8 +12,10 @@ workflows:
 
     # Define the steps for the build process.
     steps:
-      - name: Clone repository
-        script: - git clone $https://github.com/heliojsalles-art/smile-clinic-sync.git
+      scripts:
+  - name: Clone repository
+    script: |
+        git clone https://github.com/username/repo.git
         script: - cd $sa
         script: - git checkout $CM_BRANCH
 
