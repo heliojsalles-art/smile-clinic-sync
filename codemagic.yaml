@@ -4,7 +4,7 @@ workflows:
     instance_type: mac_mini_m2 
     # Mantenha '.' se o pubspec.yaml estiver na raiz. 
     # Se estiver em uma pasta, use apenas o nome dela (ex: 'app_folder')
-    working_directory: . 
+    working_directory: /Users/builder/programs/flutter/bin
     max_build_duration: 60
     environment:
       flutter: stable
@@ -22,6 +22,7 @@ workflows:
     artifacts:
       # O Codemagic busca a partir da pasta do projeto definida acima
       - build/app/outputs/flutter-apk/*.apk
+      - /Users/builder/build_outputs/*.apk
     publishing:
       email:
         recipients:
