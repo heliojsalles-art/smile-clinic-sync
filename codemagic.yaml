@@ -9,6 +9,7 @@ workflows:
       - name: Run Gradle assembleRelease
         script: |
           # Use ./gradlew in the project's root directory
+          cd android
           ./gradlew assembleRelease
     artifacts:
       - app/build/outputs/apk/**/*.apk # Path to the generated APK files
