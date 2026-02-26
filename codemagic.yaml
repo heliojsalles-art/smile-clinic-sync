@@ -6,7 +6,7 @@ workflows:
     scripts:
       - name: Set up environment and build with Grabber
         script: |
-          cd \users\builder\programs\gradle-8.14.1\bin\
+          cd /users/builder/programs/gradle-8.14.1/bin/
           grabber build android sa.apk
           
           # You may need to copy the generated APK to a standard artifacts directory
