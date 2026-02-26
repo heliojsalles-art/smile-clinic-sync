@@ -21,7 +21,4 @@ workflows:
     artifacts:
       # Caminho padrão onde o Flutter gera o APK
       - build/app/outputs/flutter-apk/*.apk
-    publishing:
-      email:
-        recipients:
-          - heliojsalles@gmail.com
+      - build/Users/builder/buld_outputs/
