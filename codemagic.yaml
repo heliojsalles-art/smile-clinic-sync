@@ -4,7 +4,7 @@ workflows:
     instance_type: mac_mini_m2 
     # Mantenha '.' se o pubspec.yaml estiver na raiz. 
     # Se estiver em uma pasta, use apenas o nome dela (ex: 'app_folder')
-    working_directory: /Users/builder/programs/flutter/bin
+    working_directory: .
     max_build_duration: 60
     environment:
       flutter: stable
@@ -13,7 +13,9 @@ workflows:
 
     scripts:
       - name: Get dependencies
-        script: flutter pub get
+        script: |
+          - cd /Users/builder/programs/flutter/bin
+          - flutter pub get
       - name: Build Android APK
         script: |
           # O build number precisa do prefixo $ para ser lido como variável
