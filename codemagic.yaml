@@ -10,10 +10,7 @@ workflows:
       vars:
         PACKAGE_NAME: "sa"
     scripts:
-      - name: Get dependencies
-        script: 
-          /Users/builder/programs/flutter/bin/flutter packages pub get
-      - name: Anfoid
+      - name: Android build
         script: |
           flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
     artifacts:
