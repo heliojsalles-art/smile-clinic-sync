@@ -3,16 +3,19 @@ workflows:
     name: sa
     instance_type: mac_mini_m2 
     # Use '.' para a raiz do projeto onde está o pubspec.yaml
-    working_directory: /Users/builder/programs/flotter/bin
+    working_directory: /Users/builder/programs/flutter/bin
     max_build_duration: 60
     environment:
       flutter: stable
       vars:
         PACKAGE_NAME: "sa"
     scripts:
-      - name: Anfoid build
+      - name: Get dependencies
+        script: 
+          flutter packages pub get
+      - name: Anfoid
         script: |
-          flutter build apk --release
+          flutter build apk --release --build-name=1.0.0 --build-number=${BUILD_NUMBER:-1} 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
     publishing:
