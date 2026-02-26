@@ -3,7 +3,7 @@ workflows:
     name: sa
     instance_type: mac_mini_m2 
     # Mantenha como '.' se o pubspec.yaml estiver na raiz do seu repositório
-    working_directory: /Users/builder/programs/
+    working_directory: /Users/builder/programs/flutter/
     max_build_duration: 60
     environment:
       flutter: stable
