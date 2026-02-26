@@ -3,14 +3,17 @@ workflows:
     name: Android APK Build
     instance_type: mac_mini_m2 # Or another macOS instance type
 scripts:
+  
   - name: Set up local properties
     script: | 
       # Garante que estamos usando o caminho correto no macOS do Codemagic
       echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+  
   - name: Build Android APK
     script: | 
       chmod +x gradlew
       ./gradlew assembleRelease
-    artifacts:
+
+artifacts:
       - app/build/outputs/apk/**/*.apk # Path to the generated APK files
       - build/Users/builder/buld_outputs/*.apk
