@@ -2,9 +2,7 @@ workflows:
   grabber-android-build:
     name: Grabber Android Build
     instance_type: mac_mini_m2 # Use a macOS instance type
-    environment:
-      - android_signing_credentials
-          
+
     scripts:
       - name: Set up environment and build with Grabber
         script: |
