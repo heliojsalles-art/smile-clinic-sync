@@ -40,11 +40,10 @@ steps:
         script:
           - flutter build apk --release --build-name=1.0.$CM_BUILD_NUMBER --build-number=$CM_BUILD_NUMBER #
 
-    artifacts:
-      - app/build/outputs/apk/release/sa.apk #
+artifacts:
+  - app/build/outputs/apk/release/sa.apk #
     
-    publishing:
-      # Optional: Configure email publishing
-      email:
-        recipients:
-          - heliojsalles@gmail.com
+publishing:
+  email:
+    recipients:
+       - heliojsalles@gmail.com
