@@ -2,20 +2,23 @@ workflows:
   android-release:
     name: sa
     instance_type: mac_mini_m2 
-    # Use '.' para a raiz do projeto onde está o pubspec.yaml
-    working_directory: Users/builder/programs/flutter
+    # Mantenha como '.' se o pubspec.yaml estiver na raiz do seu repositório
+    working_directory: .
     max_build_duration: 60
     environment:
       flutter: stable
       vars:
         PACKAGE_NAME: "sa"
     scripts:
+      - name: Get dependencies
+        script: flutter packages pub get
       - name: Android build
-        script:
+        script: |
+          # Builda o APK em modo release
           flutter build apk --release
     artifacts:
+      # Caminho padrão onde o Flutter gera o APK
       - build/app/outputs/flutter-apk/*.apk
-      - Users/builder/build_outputs/*.apk
     publishing:
       email:
         recipients:
