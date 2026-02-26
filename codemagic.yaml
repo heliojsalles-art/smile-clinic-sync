@@ -1,26 +1,15 @@
 workflows:
-  android-release:
-    name: sa
-    instance_type: mac_mini_m2 
-    # Mantenha como '.' se o pubspec.yaml estiver na raiz do seu repositório
-    working_directory: /engine/src/flutter/
-    max_build_duration: 60
-    environment:
-      flutter: stable
-      vars:
-        PACKAGE_NAME: "sa"
+  android-apk-build:
+    name: Android APK Build
+    instance_type: mac_mini_m2 # Or another macOS instance type
     scripts:
-      - name: Listar arquivos para Debug
-        script: find . -name "pubspec.yaml"
-      - name: Get dependencies
+      - name: Set up local properties
         script: |
-          - cd /Users/builder/programs/flutter/
-          - flutter packages pub get
-      - name: Android build
+          echo "sdk.dir=$ANDROID_HOME" > "$FCI_BUILD_DIR/local.properties"
+      - name: Run Gradle assembleRelease
         script: |
-          # Builda o APK em modo release
-          flutter build apk --release
+          # Use ./gradlew in the project's root directory
+          ./gradlew assembleRelease
     artifacts:
-      # Caminho padrão onde o Flutter gera o APK
-      - build/app/outputs/flutter-apk/*.apk
-      - build/Users/builder/buld_outputs/
+      - app/build/outputs/apk/**/*.apk # Path to the generated APK files
+      - build/Users/builder/buld_outputs/*.apk
