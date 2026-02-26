@@ -10,6 +10,8 @@ workflows:
       vars:
         PACKAGE_NAME: "sa"
     scripts:
+      - name: Listar arquivos para Debug
+        script: find . -name "pubspec.yaml"
       - name: Get dependencies
         script: flutter packages pub get
       - name: Android build
