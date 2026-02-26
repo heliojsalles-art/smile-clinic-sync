@@ -11,13 +11,6 @@ workflows:
         PACKAGE_NAME: "sa"
 
     scripts:
-    
-      - name: Get dependencies
-        script: |
-          # Tenta limpar o cache antes de baixar
-          flutter pub cache repair 
-          flutter packages pub get
-
       
       - name: Build Android APK
         script: |
