@@ -1,16 +1,26 @@
 workflows:
-  android-mac-workflow:
-    name: Android Build on macOS
+  android-build:
+    name: Build Web to APK
     instance_type: mac_mini_m2
     scripts:
-      - name: List Files (Debug)
+      - name: Install dependencies
         script: |
-          # Isso vai mostrar no log onde estão seus arquivos
-          ls -R
-      - name: Run Build
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm run build # Gera a pasta 'dist'
+
+      - name: Add Android Platform
         script: |
-          # Procura o gradlew e executa onde quer que ele esteja
-          find . -name "gradlew" -exec chmod +x {} \;
-          find . -name "gradlew" -exec {} assembleDebug \;
+          # Inicializa o Capacitor se não houver config
+          [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
+          npx cap add android
+          npx cap copy android
+
+      - name: Build APK with Gradle
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
     artifacts:
-      - "**/build/outputs/**/*.apk"
+      - android/app/build/outputs/apk/debug/*.apk
