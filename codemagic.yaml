@@ -1,62 +1,43 @@
 workflows:
-android-build:
-  name: Build Web to APK
-  instance_type: mac_mini_m2
-  environment:
-    node: latest
-    java: 21
-  scripts:
-    - name: Install dependencies, build web, and sync Capacitor
-      script: |
-        # Exit immediately if any command fails
-        set -e
-
-        echo "Installing dependencies..."
-        npm install
-
-        echo "Installing Capacitor..."
-        npm install @capacitor/core @capacitor/cli @capacitor/android
-
-        echo "Building web assets..."
-        npm run build
-
-        # Check for capacitor.config.json and initialize if needed
-        if [ ! -f "capacitor.config.json" ]; then
-          echo "Initializing Capacitor project..."
-          npx cap init "My App" "com.example.app" --web-dir dist
-          npx cap add android
-        fi
-        
-        echo "Syncing Capacitor..."
-        npx cap sync android
-
-    - name: Generate App Icons
-      script: |
-        set -e
-        # Install the official assets tool
-        npm install -g @capacitor/assets
-
-        # Find the icon automatically, excluding node_modules
-        ICON_PATH=$(find . -name "icon.png" -not -path "*/node_modules/*" | head -n 1)
-
-        if [ -n "$ICON_PATH" ]; then
-          echo "Icon found at: $ICON_PATH"
-          npx @capacitor/assets generate --android --icon "$ICON_PATH"
-        else
-          echo "FATAL ERROR: icon.png not found in any project folder."
-          echo "Current file structure:"
-          ls -R
-          exit 1
-        fi
-
-    - name: Build APK with Gradle
-      script: |
-        set -e
-        cd android
-        # Make gradlew executable
-        chmod +x gradlew
-        # Use ./gradlew instead of gradlew for clarity and robustness
-        ./gradlew assembleDebug
-
-  artifacts:
-    - android/app/build/outputs/apk/debug/*.apk
+  android-build:
+    name: Build Web to APK
+    instance_type: mac_mini_m2
+    environment:
+      node: latest
+      java: 21
+    scripts:
+      - name: Install dependencies and build web
+        script: |
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm run build
+      - name: Capacitor Sync
+        script: |
+          # Inicializa o Capacitor se necessário e sincroniza a pasta nativa
+          if [ ! -f "capacitor.config.json" ]; then
+            npx cap init "My App" "com.example.app" --web-dir dist
+            npx cap add android
+          fi
+          npx cap sync android
+      - name: Generate App Icons
+        script: |
+          # Instala a ferramenta oficial de assets
+          npm install -g @capacitor/assets
+          # Tenta encontrar o ícone automaticamente se não estiver na raiz
+          ICON_PATH=$(find . -name "icon.png" -not -path "*/node_modules/*" | head -n 1)
+          if [ -n "$ICON_PATH" ]; then
+            echo "Ícone encontrado em: $ICON_PATH"
+            npx @capacitor/assets generate --android --icon "$ICON_PATH"
+          else
+            echo "ERRO FATAL: Arquivo icon.png não encontrado em nenhuma pasta do projeto."
+            echo "Estrutura de arquivos atual:"
+            ls -R
+            exit 1
+          fi
+      - name: Build APK with Gradle
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - android/app/build/outputs/apk/debug/*.apk
