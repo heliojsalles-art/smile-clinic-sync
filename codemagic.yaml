@@ -2,35 +2,24 @@ workflows:
   android-build:
     name: Build Web to APK
     instance_type: mac_mini_m2
+    environment:
+      node: latest
     scripts:
-      - name: Set Java 21
-        script: |
-          # O Codemagic já tem várias versões, só precisamos ativar a 21
-          sdk use java 21.0.2-tem
-          java -version
-
-      - name: Install dependencies
+      - name: Install dependencies and build web
         script: |
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm run build
-
-      - name: Add Android Platform
+      - name: Capacitor Sync
         script: |
+          # Inicializa se necessário, mas garante a atualização dos arquivos web no Android
           [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
-          # Se a pasta android não existir, adiciona. Se existir, apenas sincroniza.
-          if [ ! -d "android" ]; then
-            npx cap add android
-          else
-            npx cap sync android
-          fi
-
+          npx cap add android || true
+          npx cap sync android
       - name: Build APK with Gradle
         script: |
           cd android
           chmod +x gradlew
-          # Passamos a versão do Java também para o Gradle
-          ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
-
+          ./gradlew assembleDebug
     artifacts:
       - android/app/build/outputs/apk/debug/*.apk
