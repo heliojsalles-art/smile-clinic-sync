@@ -3,18 +3,14 @@ workflows:
     name: Android Build on macOS
     instance_type: mac_mini_m2
     scripts:
-      - name: Prepare Gradlew Permissions
+      - name: List Files (Debug)
         script: |
-          # Garante que o script tenha permissão de execução no macOS
-          chmod +x gradlew || chmod +x android/gradlew 
-
-      - name: Build Android APK
+          # Isso vai mostrar no log onde estão seus arquivos
+          ls -R
+      - name: Run Build
         script: |
-          # Se o seu projeto Android estiver em uma subpasta (comum em Flutter/React Native), 
-          # use 'cd android && ./gradlew assembleDebug'. 
-          # Caso contrário, use apenas './gradlew assembleDebug'.
-          ./gradlew assembleDebug || (cd android && ./gradlew assembleDebug)
-
+          # Procura o gradlew e executa onde quer que ele esteja
+          find . -name "gradlew" -exec chmod +x {} \;
+          find . -name "gradlew" -exec {} assembleDebug \;
     artifacts:
-      - build/outputs/**/**/*.apk
-      - android/app/build/outputs/**/**/*.apk
+      - "**/build/outputs/**/*.apk"
