@@ -1,12 +1,12 @@
 workflows:
   android-build:
-    name: Build Web to APK (Java 17)
+    name: Build Web to APK
     instance_type: mac_mini_m2
     scripts:
-      - name: Set up Java 17
+      - name: Set Java 21
         script: |
-          # Define o Java 17 como padrão
-          sdk use java 17.0.10-tem
+          # O Codemagic já tem várias versões, só precisamos ativar a 21
+          sdk use java 21.0.2-tem
           java -version
 
       - name: Install dependencies
@@ -15,24 +15,22 @@ workflows:
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npm run build
 
-      - name: Sync Capacitor & Downgrade Java Config
+      - name: Add Android Platform
         script: |
-          if [ ! -f "capacitor.config.json" ]; then
-            npx cap init "My App" "com.example.app" --web-dir dist
-          fi
+          [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
+          # Se a pasta android não existir, adiciona. Se existir, apenas sincroniza.
           if [ ! -d "android" ]; then
             npx cap add android
+          else
+            npx cap sync android
           fi
-          npx cap copy android
-          
-          # COMANDO CRUCIAL: Altera o build.gradle para usar Java 17 em vez de 21
-          find android -name "build.gradle" -exec sed -i '' 's/JavaVersion.VERSION_21/JavaVersion.VERSION_17/g' {} +
 
       - name: Build APK with Gradle
         script: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          # Passamos a versão do Java também para o Gradle
+          ./gradlew assembleDebug -Dorg.gradle.java.home=$JAVA_HOME
 
     artifacts:
       - android/app/build/outputs/apk/debug/*.apk
