@@ -2,18 +2,32 @@ workflows:
   android-build:
     name: Build Web to APK
     instance_type: mac_mini_m2
+    environment:
+      vars:
+        JAVA_VERSION: "21" # Força o uso do Java 21
     scripts:
+      - name: Set up Java 21
+        script: |
+          # Define o Java 21 como padrão na VM
+          sdk install java 21.0.2-tem
+          sdk default java 21.0.2-tem
+
       - name: Install dependencies
         script: |
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npm run build # Gera a pasta 'dist'
+          npm run build # Certifique-se que o build gera a pasta 'dist'
 
       - name: Add Android Platform
         script: |
-          # Inicializa o Capacitor se não houver config
-          [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
-          npx cap add android
+          # Inicializa o Capacitor se necessário
+          if [ ! -f "capacitor.config.json" ]; then
+            npx cap init "My App" "com.example.app" --web-dir dist
+          fi
+          # Adiciona a plataforma android se não existir
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
           npx cap copy android
 
       - name: Build APK with Gradle
