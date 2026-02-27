@@ -1,25 +1,27 @@
-workflows:
-  android-build:
-    name: Build Web to APK
-    instance_type: mac_mini_m2
-    environment:
-      node: latest
-      java: 21  # <--- Adicione esta linha para usar o Java 21
-    scripts:
-      - name: Install dependencies and build web
-        script: |
-          npm install
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npm run build
-      - name: Capacitor Sync
-        script: |
-          [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
-          npx cap add android || true
-          npx cap sync android
-      - name: Build APK with Gradle
-        script: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-    artifacts:
-      - android/app/build/outputs/apk/debug/*.apk
+android-build:
+  name: Build Web to APK
+  instance_type: mac_mini_m2
+  environment:
+    node: latest
+    java: 21
+  scripts:
+    - name: Install dependencies and build web
+      script: |
+        npm install
+        npm install @capacitor/core @capacitor/cli @capacitor/android
+        npm run build
+    - name: Capacitor Sync
+      script: |
+        [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
+        npx cap add android || true
+        npx cap sync android
+    - name: Build APK with Gradle
+      script: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleDebug
+        # Renomeia o APK padrão para o nome desejado
+        mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/Agenda_Dental.apk
+  artifacts:
+    # Atualizado para o novo nome do arquivo
+    - android/app/build/outputs/apk/debug/Agenda_Dental.apk
