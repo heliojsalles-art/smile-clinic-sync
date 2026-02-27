@@ -16,11 +16,15 @@ workflows:
           [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
           npx cap add android || true
           npx cap sync android
-      - name: Generate App Icons # <--- Add this step
-        script: |
-          npm install -g capacitor-assets
-          # Replace 'assets/icon.png' with your actual icon path
-          npx capacitor-assets generate --icon assets/icon.png
+            - name: Generate App Icons
+      - Name: Icon
+         script: |
+          # Use the correct scoped package name
+          npm install -g @capacitor/assets
+          
+          # Ensure your icon exists at this path in your repo
+          # If your icon is in a different folder, change 'assets/icon.png' below
+          npx @capacitor/assets generate --android --icon assets/icon.png
       - name: Build APK with Gradle
         script: |
           cd android
