@@ -23,11 +23,14 @@ workflows:
         script: |
           # Instala a ferramenta oficial de assets
           npm install -g @capacitor/assets
+          
           # Tenta encontrar o ícone automaticamente se não estiver na raiz
           ICON_PATH=$(find . -name "icon.png" -not -path "*/node_modules/*" | head -n 1)
+          
           if [ -n "$ICON_PATH" ]; then
             echo "Ícone encontrado em: $ICON_PATH"
-            npx @capacitor/assets generate --android --icon "$ICON_PATH"
+            # Correção: Uso do --iconOrigin conforme a documentação atual
+            npx @capacitor/assets generate --android --iconOrigin "$ICON_PATH"
           else
             echo "ERRO FATAL: Arquivo icon.png não encontrado em nenhuma pasta do projeto."
             echo "Estrutura de arquivos atual:"
