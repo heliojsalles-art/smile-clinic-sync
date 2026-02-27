@@ -4,7 +4,7 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       node: latest
-      java: 21  # <--- Adicione esta linha para usar o Java 21
+      java: 21
     scripts:
       - name: Install dependencies and build web
         script: |
@@ -16,6 +16,11 @@ workflows:
           [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
           npx cap add android || true
           npx cap sync android
+      - name: Generate App Icons # <--- Add this step
+        script: |
+          npm install -g capacitor-assets
+          # Replace 'assets/icon.png' with your actual icon path
+          npx capacitor-assets generate --icon assets/icon.png
       - name: Build APK with Gradle
         script: |
           cd android
@@ -23,5 +28,3 @@ workflows:
           ./gradlew assembleDebug
     artifacts:
       - android/app/build/outputs/apk/debug/*.apk
-      - android/app/build/outputs/apk/debug/SA.apk
-        
