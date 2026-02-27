@@ -16,9 +16,8 @@ workflows:
           [ ! -f "capacitor.config.json" ] && npx cap init "My App" "com.example.app" --web-dir dist
           npx cap add android || true
           npx cap sync android
-            - name: Generate App Icons
-      - name: Icon
-         script: |
+      - name: Generate App Icons
+        script: |
           # Use the correct scoped package name
           npm install -g @capacitor/assets
           
