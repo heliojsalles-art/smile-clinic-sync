@@ -18,7 +18,7 @@ export default function SettingsView() {
     toast({ title: 'Configurações salvas', description: 'As informações da clínica foram atualizadas.' });
   };
 
-  const handleExportBackup = () => {
+  const handleExportBackup = async () => {
     const backup = {
       version: 1,
       exportedAt: new Date().toISOString(),
@@ -28,13 +28,33 @@ export default function SettingsView() {
       settings: JSON.parse(localStorage.getItem('clinic_settings') || '{}'),
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const fileName = `backup-clinica-${new Date().toISOString().slice(0, 10)}.json`;
+    const file = new File([blob], fileName, { type: 'application/json' });
+
+    // Try Web Share API (works on mobile to share directly to Google Drive, WhatsApp, etc.)
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: 'Backup da Clínica',
+          text: 'Arquivo de backup dos dados da clínica',
+          files: [file],
+        });
+        toast({ title: 'Backup compartilhado', description: 'Arquivo enviado com sucesso.' });
+        return;
+      } catch (err: any) {
+        // User cancelled share — fall through to download
+        if (err?.name === 'AbortError') return;
+      }
+    }
+
+    // Fallback: download the file
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `backup-clinica-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
-    toast({ title: 'Backup exportado', description: 'Faça upload deste arquivo no seu Google Drive para manter seguro.' });
+    toast({ title: 'Backup exportado', description: 'Salve este arquivo no seu Google Drive para manter seguro.' });
   };
 
   const handleImportBackup = () => {
