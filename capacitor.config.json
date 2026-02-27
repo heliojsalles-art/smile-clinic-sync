@@ -1,9 +1,5 @@
 {
   "appId": "app.lovable.776664c46ec44655a2bcb276d1c9b09c",
   "appName": "sallesatelie",
-  "webDir": "dist",
-  "server": {
-    "url": "https://776664c4-6ec4-4655-a2bc-b276d1c9b09c.lovableproject.com?forceHideBadge=true",
-    "cleartext": true
-  }
+  "webDir": "dist"
 }
