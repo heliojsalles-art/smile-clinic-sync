@@ -13,7 +13,6 @@ workflows:
           npm run build
       - name: Capacitor Sync
         script: |
-          # Inicializa o Capacitor se necessário e sincroniza a pasta nativa
           if [ ! -f "capacitor.config.json" ]; then
             npx cap init "My App" "com.example.app" --web-dir dist
             npx cap add android
@@ -21,20 +20,22 @@ workflows:
           npx cap sync android
       - name: Generate App Icons
         script: |
-          # Instala a ferramenta oficial de assets
+          # Instala a ferramenta
           npm install -g @capacitor/assets
           
-          # Tenta encontrar o ícone automaticamente se não estiver na raiz
+          # Encontra o ícone
           ICON_PATH=$(find . -name "icon.png" -not -path "*/node_modules/*" | head -n 1)
           
           if [ -n "$ICON_PATH" ]; then
             echo "Ícone encontrado em: $ICON_PATH"
-            # Correção: Uso do --iconOrigin conforme a documentação atual
-            npx @capacitor/assets generate --android --iconOrigin "$ICON_PATH"
+            # Cria a estrutura que a ferramenta espera por padrão
+            mkdir -p assets
+            cp "$ICON_PATH" assets/icon.png
+            
+            # Executa sem flags de caminho (ele usará a pasta assets criada)
+            npx @capacitor/assets generate --android
           else
-            echo "ERRO FATAL: Arquivo icon.png não encontrado em nenhuma pasta do projeto."
-            echo "Estrutura de arquivos atual:"
-            ls -R
+            echo "ERRO: Arquivo icon.png não encontrado."
             exit 1
           fi
       - name: Build APK with Gradle
