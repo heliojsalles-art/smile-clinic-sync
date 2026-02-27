@@ -1,38 +1,20 @@
-# The name of the workflow
 workflows:
   android-mac-workflow:
     name: Android Build on macOS
-    # Specify the macOS instance type
     instance_type: mac_mini_m2
-
-    # Environment variables (optional, e.g., if you have sensitive credentials in a group)
-    # environment:
-    #   groups:
-    #     - android_credentials
-
-    # Define the scripts to run
     scripts:
-      - name: Set up Android SDK
+      - name: Prepare Gradlew Permissions
         script: |
-          # The Android SDK is pre-installed on Codemagic machines
-          # Ensure appropriate permissions or setup if custom SDK path is used
-          echo "Android SDK is ready to use."
+          # Garante que o script tenha permissão de execução no macOS
+          chmod +x gradlew || chmod +x android/gradlew 
 
-      - name: Run Gradle assembleDebug
+      - name: Build Android APK
         script: |
-          # Use the gradlew wrapper to build the debug APK
-          ./gradlew assembleDebug
+          # Se o seu projeto Android estiver em uma subpasta (comum em Flutter/React Native), 
+          # use 'cd android && ./gradlew assembleDebug'. 
+          # Caso contrário, use apenas './gradlew assembleDebug'.
+          ./gradlew assembleDebug || (cd android && ./gradlew assembleDebug)
 
-    # Define where the artifacts (APK file) can be found
     artifacts:
       - build/outputs/**/**/*.apk
-    
-    # Optional: Configure automatic build triggering
-    # triggering:
-    #   branch_patterns:
-    #     - pattern: master
-    #       include: true
-    #       trigger_test: true
-    #     - pattern: develop
-    #       include: true
-    #       trigger_test: true
+      - android/app/build/outputs/**/**/*.apk
