@@ -1,41 +1,41 @@
+# A basic Codemagic.yaml for a Flutter project to build an Android APK on macOS.
+# For more examples and advanced configurations, check the official [Codemagic Sample Projects](https://github.com/codemagic-ci-cd/codemagic-sample-projects) repository.
+
 workflows:
-  android-apk-build:
-    name: Android APK Build on macOS
-    # Specify the macOS instance type for the builder
-    # Available types can be found in the Codemagic documentation
+  android-release-workflow:
+    name: Android Release Workflow (macOS)
+    # Specify a macOS instance type for the build machine
     instance_type: mac_mini_m2
-
-    # Environment variables (optional, but recommended for secrets like code signing)
+    max_build_duration: 60
     environment:
-      vars:
-        # Define the path where the APK will be generated relative to the project root
-        APK_OUTPUT_PATH: "User/builder/programs/sa.apk"
-
-    # Define the steps to run
-    scripts:
-      - name: Fetch code signing credentials
-        # This command fetches the keystore and related passwords from the configured
-        # environment variables and makes them available to Gradle
-        script: |
-          echo $CM_KEYSTORE | base64 --decode > $User/builder/programs/keystore.jks
-      
-      - name: Set up local properties
-        # This script ensures local.properties exists and sets the SDK path
-        script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$User/builder/programs/local.properties"
-      
-      - name: Build Android release APK with Gradle
-        # Run the Gradle command to assemble the release APK
-        # Ensure your app/build.gradle is configured to use the signing variables
-        # (Refer to Codemagic docs for configuring build.gradle signingConfig)
-        script: |
-          ./gradlew assembleRelease
-
-    # Artifacts (the resulting files to save)
-    artifacts:
-      - $APK_OUTPUT_PATH
+      # Specify the Flutter version
+      flutter: stable
+      # Add environment variables for code signing if needed (set in Codemagic UI)
+      # groups:
+      #   - android-signing-credentials
     
-    # Publishing (optional, e.g., to Firebase App Distribution or Google Play)
+    scripts:
+      - name: Get Flutter packages
+        script: flutter packages pub get
+
+      # Optional: Add a script for automatic versioning (e.g., --build-number=$PROJECT_BUILD_NUMBER)
+      # - name: Increment build number
+      #   script: |
+      #     flutter build apk --release --build-number=$PROJECT_BUILD_NUMBER
+
+      - name: Build Android Release APK
+        script: flutter build apk --release
+
+    artifacts:
+      # Define which files to save as build artifacts
+      - builder/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
+      - Users/builder/programs/build_outputs/*.apk
+      - build/**/outputs/**/mapping.txt
+      - flutter_drive.log
+    
+    # Optional: Add publishing section (e.g., to email, Google Play, Firebase)
     # publishing:
-    #   firebase:
-    #     ...
+    #   email:
+    #     recipients:
+    #       - name@gmail.com
