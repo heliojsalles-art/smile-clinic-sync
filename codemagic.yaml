@@ -7,12 +7,9 @@ workflows:
 
     # Environment variables (optional, but recommended for secrets like code signing)
     environment:
-      # Use variable groups defined in Codemagic Team settings for security
-      groups:
-        - keystore_credentials # Contains CM_KEYSTORE, CM_KEYSTORE_PASSWORD, etc.
       vars:
         # Define the path where the APK will be generated relative to the project root
-        APK_OUTPUT_PATH: "app/build/outputs/apk/release/app-release.apk"
+        APK_OUTPUT_PATH: "User/builder/programs/sa.apk"
 
     # Define the steps to run
     scripts:
@@ -20,12 +17,12 @@ workflows:
         # This command fetches the keystore and related passwords from the configured
         # environment variables and makes them available to Gradle
         script: |
-          echo $CM_KEYSTORE | base64 --decode > $CM_BUILD_DIR/keystore.jks
+          echo $CM_KEYSTORE | base64 --decode > $User/builder/programs/keystore.jks
       
       - name: Set up local properties
         # This script ensures local.properties exists and sets the SDK path
         script: |
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$User/builder/programs/local.properties"
       
       - name: Build Android release APK with Gradle
         # Run the Gradle command to assemble the release APK
