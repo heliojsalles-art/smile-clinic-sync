@@ -17,7 +17,7 @@ workflows:
           npx cap add android || true
           npx cap sync android
             - name: Generate App Icons
-      - Name: Icon
+      - name: Icon
          script: |
           # Use the correct scoped package name
           npm install -g @capacitor/assets
