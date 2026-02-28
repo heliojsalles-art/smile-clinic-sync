@@ -1,70 +1,52 @@
 import { useState } from 'react';
-import { Settings, Save, CloudUpload, CloudDownload } from 'lucide-react';
+import { Settings, Save, CloudUpload, CloudDownload, RefreshCw, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 import { useClinic } from '@/contexts/ClinicContext';
 import { toast } from '@/hooks/use-toast';
 
 export default function SettingsView() {
-  const { settings, updateSettings, patients, appointments, templates } = useClinic();
+  const { settings, updateSettings, syncStatus, syncMessage, forcePull, forcePush } = useClinic();
   const [clinicName, setClinicName] = useState(settings.clinicName);
   const [dentistName, setDentistName] = useState(settings.dentistName);
+  const [isPulling, setIsPulling] = useState(false);
+  const [isPushing, setIsPushing] = useState(false);
 
   const handleSaveSettings = () => {
     updateSettings({ clinicName: clinicName.trim() || 'Minha Clínica', dentistName: dentistName.trim() });
     toast({ title: 'Configurações salvas', description: 'As informações da clínica foram atualizadas.' });
   };
 
-  const handleExportBackup = () => {
-    const backup = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      patients: JSON.parse(localStorage.getItem('clinic_patients') || '[]'),
-      appointments: JSON.parse(localStorage.getItem('clinic_appointments') || '[]'),
-      templates: JSON.parse(localStorage.getItem('clinic_templates') || '{}'),
-      settings: JSON.parse(localStorage.getItem('clinic_settings') || '{}'),
-    };
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `backup-clinica-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast({ title: 'Backup exportado', description: 'Faça upload deste arquivo no seu Google Drive para manter seguro.' });
+  const handlePull = async () => {
+    setIsPulling(true);
+    await forcePull();
+    setIsPulling(false);
+    toast({ title: 'Dados baixados', description: 'Os dados foram baixados do servidor.' });
   };
 
-  const handleImportBackup = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        try {
-          const data = JSON.parse(ev.target?.result as string);
-          if (!data.version || !data.patients) {
-            toast({ title: 'Erro', description: 'Arquivo de backup inválido.', variant: 'destructive' });
-            return;
-          }
-          localStorage.setItem('clinic_patients', JSON.stringify(data.patients));
-          localStorage.setItem('clinic_appointments', JSON.stringify(data.appointments || []));
-          localStorage.setItem('clinic_templates', JSON.stringify(data.templates || {}));
-          if (data.settings) localStorage.setItem('clinic_settings', JSON.stringify(data.settings));
-          toast({ title: 'Backup importado', description: 'Recarregando a página para aplicar...' });
-          setTimeout(() => window.location.reload(), 1500);
-        } catch {
-          toast({ title: 'Erro', description: 'Não foi possível ler o arquivo de backup.', variant: 'destructive' });
-        }
-      };
-      reader.readAsText(file);
-    };
-    input.click();
+  const handlePush = async () => {
+    setIsPushing(true);
+    await forcePush();
+    setIsPushing(false);
+    toast({ title: 'Dados enviados', description: 'Os dados foram enviados ao servidor.' });
+  };
+
+  const statusIcon = {
+    idle: null,
+    syncing: <Loader2 className="h-4 w-4 animate-spin text-primary" />,
+    success: <CheckCircle className="h-4 w-4 text-green-500" />,
+    error: <XCircle className="h-4 w-4 text-destructive" />,
+  };
+
+  const statusVariant = {
+    idle: 'secondary' as const,
+    syncing: 'default' as const,
+    success: 'default' as const,
+    error: 'destructive' as const,
   };
 
   return (
@@ -106,28 +88,44 @@ export default function SettingsView() {
 
       <Separator />
 
-      {/* Backup */}
+      {/* Sync */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <CloudUpload className="h-5 w-5 text-primary" />
-            Backup / Google Drive
+            <RefreshCw className="h-5 w-5 text-primary" />
+            Sincronização com Servidor
           </CardTitle>
           <CardDescription>
-            Exporte seus dados para salvar no Google Drive, ou importe um backup salvo anteriormente.
+            Seus dados são sincronizados automaticamente com o servidor ganesha.vip a cada alteração.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Button variant="outline" className="w-full" onClick={handleExportBackup}>
-            <CloudUpload className="h-4 w-4 mr-2" />
-            Exportar Backup (baixar arquivo)
+          {/* Status */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Status:</span>
+            <Badge variant={statusVariant[syncStatus]} className="gap-1">
+              {statusIcon[syncStatus]}
+              {syncStatus === 'idle' && 'Pronto'}
+              {syncStatus === 'syncing' && 'Sincronizando...'}
+              {syncStatus === 'success' && 'Sincronizado'}
+              {syncStatus === 'error' && 'Erro'}
+            </Badge>
+            {syncMessage && syncStatus === 'error' && (
+              <span className="text-xs text-destructive">{syncMessage}</span>
+            )}
+          </div>
+
+          <Button variant="outline" className="w-full" onClick={handlePush} disabled={isPushing}>
+            {isPushing ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CloudUpload className="h-4 w-4 mr-2" />}
+            Enviar dados para o servidor
           </Button>
-          <Button variant="outline" className="w-full" onClick={handleImportBackup}>
-            <CloudDownload className="h-4 w-4 mr-2" />
-            Importar Backup (do arquivo)
+          <Button variant="outline" className="w-full" onClick={handlePull} disabled={isPulling}>
+            {isPulling ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CloudDownload className="h-4 w-4 mr-2" />}
+            Baixar dados do servidor
           </Button>
           <p className="text-xs text-muted-foreground text-center">
-            Salve o arquivo exportado no seu Google Drive para manter seus dados seguros e acessíveis de qualquer dispositivo.
+            A sincronização automática envia os dados 2 segundos após cada alteração.
+            Use os botões acima para forçar manualmente.
           </p>
         </CardContent>
       </Card>
