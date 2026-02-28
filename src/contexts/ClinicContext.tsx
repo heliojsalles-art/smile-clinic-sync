@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Patient, Appointment, WhatsAppTemplate, ClinicSettings } from '@/types/clinic';
+import { schedulePush, pullData, onSyncStatus } from '@/lib/syncService';
 
 interface ClinicContextType {
   patients: Patient[];
@@ -17,6 +18,10 @@ interface ClinicContextType {
   getLastAppointment: (patientId: string) => Appointment | undefined;
   updateTemplates: (templates: WhatsAppTemplate) => void;
   updateSettings: (settings: ClinicSettings) => void;
+  syncStatus: 'idle' | 'syncing' | 'success' | 'error';
+  syncMessage: string;
+  forcePull: () => Promise<void>;
+  forcePush: () => Promise<void>;
 }
 
 const ClinicContext = createContext<ClinicContextType | null>(null);
@@ -46,11 +51,34 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   const [appointments, setAppointments] = useState<Appointment[]>(() => loadFromStorage('clinic_appointments', []));
   const [templates, setTemplates] = useState<WhatsAppTemplate>(() => loadFromStorage('clinic_templates', DEFAULT_TEMPLATES));
   const [settings, setSettings] = useState<ClinicSettings>(() => loadFromStorage('clinic_settings', DEFAULT_SETTINGS));
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
+  const [syncMessage, setSyncMessage] = useState('');
+  const isInitialLoad = useRef(true);
+
+  // Listen to sync status changes
+  useEffect(() => {
+    return onSyncStatus((status, message) => {
+      setSyncStatus(status);
+      setSyncMessage(message || '');
+      if (status === 'success') {
+        setTimeout(() => setSyncStatus('idle'), 3000);
+      }
+    });
+  }, []);
 
   useEffect(() => { localStorage.setItem('clinic_patients', JSON.stringify(patients)); }, [patients]);
   useEffect(() => { localStorage.setItem('clinic_appointments', JSON.stringify(appointments)); }, [appointments]);
   useEffect(() => { localStorage.setItem('clinic_templates', JSON.stringify(templates)); }, [templates]);
   useEffect(() => { localStorage.setItem('clinic_settings', JSON.stringify(settings)); }, [settings]);
+
+  // Auto-sync on data changes (skip initial load)
+  useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
+    schedulePush({ patients, appointments, templates, settings });
+  }, [patients, appointments, templates, settings]);
 
   const addPatient = useCallback((data: Omit<Patient, 'id' | 'createdAt'>) => {
     const patient: Patient = { ...data, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
@@ -97,6 +125,25 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   const updateTemplates = useCallback((t: WhatsAppTemplate) => setTemplates(t), []);
   const updateSettings = useCallback((s: ClinicSettings) => setSettings(s), []);
 
+  const forcePull = useCallback(async () => {
+    const data = await pullData();
+    if (data) {
+      setPatients(data.patients as Patient[]);
+      setAppointments(data.appointments as Appointment[]);
+      setTemplates(data.templates as WhatsAppTemplate);
+      setSettings(data.settings as ClinicSettings);
+      localStorage.setItem('clinic_patients', JSON.stringify(data.patients));
+      localStorage.setItem('clinic_appointments', JSON.stringify(data.appointments));
+      localStorage.setItem('clinic_templates', JSON.stringify(data.templates));
+      localStorage.setItem('clinic_settings', JSON.stringify(data.settings));
+    }
+  }, []);
+
+  const forcePush = useCallback(async () => {
+    const { pushData } = await import('@/lib/syncService');
+    await pushData({ patients, appointments, templates, settings });
+  }, [patients, appointments, templates, settings]);
+
   return (
     <ClinicContext.Provider value={{
       patients, appointments, templates, settings,
@@ -104,6 +151,7 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
       addAppointment, deleteAppointment,
       getPatientById, getAppointmentsForDate, getAppointmentsForDateRange, getLastAppointment,
       updateTemplates, updateSettings,
+      syncStatus, syncMessage, forcePull, forcePush,
     }}>
       {children}
     </ClinicContext.Provider>
