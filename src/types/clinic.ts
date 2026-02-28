@@ -5,6 +5,13 @@ export interface Payment {
   description: string;
 }
 
+export interface Treatment {
+  id: string;
+  description: string;
+  payments: Payment[];
+  createdAt: string;
+}
+
 export interface Patient {
   id: string;
   name: string;
@@ -12,8 +19,11 @@ export interface Patient {
   birthDate?: string; // YYYY-MM-DD
   isInsurance: boolean;
   insuranceNumber?: string;
+  /** @deprecated Use treatments instead */
   treatment?: string;
+  /** @deprecated Use treatments instead */
   payments?: Payment[];
+  treatments?: Treatment[];
   createdAt: string;
 }
 

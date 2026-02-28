@@ -13,19 +13,39 @@ export default function FinanceView() {
   const monthEnd = endOfMonth(currentMonth);
 
   const monthPayments = useMemo(() => {
-    const items: { patientName: string; date: string; amount: number; description: string }[] = [];
+    const items: { patientName: string; treatmentDesc: string; date: string; amount: number; description: string }[] = [];
 
     for (const patient of patients) {
-      if (!patient.payments) continue;
-      for (const payment of patient.payments) {
-        const paymentDate = new Date(payment.date);
-        if (paymentDate >= monthStart && paymentDate <= monthEnd) {
-          items.push({
-            patientName: patient.name,
-            date: payment.date,
-            amount: payment.amount,
-            description: payment.description,
-          });
+      // New format: treatments with embedded payments
+      if (patient.treatments) {
+        for (const treatment of patient.treatments) {
+          for (const payment of treatment.payments) {
+            const paymentDate = new Date(payment.date);
+            if (paymentDate >= monthStart && paymentDate <= monthEnd) {
+              items.push({
+                patientName: patient.name,
+                treatmentDesc: treatment.description || '',
+                date: payment.date,
+                amount: payment.amount,
+                description: payment.description,
+              });
+            }
+          }
+        }
+      }
+      // Legacy format fallback
+      else if (patient.payments) {
+        for (const payment of patient.payments) {
+          const paymentDate = new Date(payment.date);
+          if (paymentDate >= monthStart && paymentDate <= monthEnd) {
+            items.push({
+              patientName: patient.name,
+              treatmentDesc: patient.treatment || '',
+              date: payment.date,
+              amount: payment.amount,
+              description: payment.description,
+            });
+          }
         }
       }
     }
